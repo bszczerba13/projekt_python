@@ -11,4 +11,4 @@ class AccountPage(BasePage):
         return self.driver.find_element(*Locators.PAGE_TITLE).text
 
     def _verify_page(self):
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locators.PAGE_TITLE))
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.PAGE_TITLE))
