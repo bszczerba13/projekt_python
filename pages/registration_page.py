@@ -31,13 +31,8 @@ class RegistrationPage(BasePage):
         countries_list = self.driver.find_element(*Locators.COUNTRY)
         select = Select(countries_list)
         countries = select.options
-        valid_countries = []
-        for country in countries:
-            value = country.get_attribute("value")
-            if value:
-                valid_countries.append(country)
-        random_country = random.choice(valid_countries)
-        select.select_by_value(random_country.get_attribute("value"))
+        index = random.randint(1, len(countries)-1)
+        select.select_by_index(index)
 
     def enter_postal_code(self, postal_code):
         self.driver.find_element(*Locators.POSTAL_CODE).send_keys(postal_code)
