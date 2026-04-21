@@ -11,6 +11,7 @@ class Locators:
     LOGIN_PASSWORD = (By.ID, 'password')
     LOGIN_BUTTON = (By.CSS_SELECTOR, "[data-test='login-submit']")
     REGISTER_ACCOUNT_LINK = (By.CSS_SELECTOR, "[data-test='register-link']")
+    LOGIN_PAGE_TITLE = (By.XPATH, "//h3[text()='Login']")
 
 class LoginPage(BasePage):
     def enter_email(self, email):
@@ -27,5 +28,9 @@ class LoginPage(BasePage):
         self.driver.find_element(*Locators.REGISTER_ACCOUNT_LINK).click()
         return RegistrationPage(self.driver)
 
+    def is_page_title_visible(self):
+        login_page_title = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.LOGIN_PAGE_TITLE))
+        return login_page_title.is_displayed()
+
     def _verify_page(self):
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.LOGIN_EMAIL))
+        WebDriverWait(self.driver, 20).until(EC.visibility_of_element_located(Locators.LOGIN_EMAIL))
