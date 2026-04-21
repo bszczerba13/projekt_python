@@ -1,9 +1,9 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
 from pages.base_page import BasePage
-
+from selenium.webdriver.support.ui import Select
+import random
 
 class Locators:
     FIRST_NAME = (By.CSS_SELECTOR, "[data-test='first-name']")
@@ -27,8 +27,17 @@ class RegistrationPage(BasePage):
     def enter_date_of_birth(self, date_of_birth):
         self.driver.find_element(*Locators.DATE_OF_BIRTH).send_keys(date_of_birth)
 
-    def enter_country(self):
-        pass
+    def select_country(self):
+        countries_list = self.driver.find_element(*Locators.COUNTRY)
+        select = Select(countries_list)
+        countries = select.options
+        valid_countries = []
+        for country in countries:
+            value = country.get_attribute("value")
+            if value:
+                valid_countries.append(country)
+        random_country = random.choice(valid_countries)
+        select.select_by_value(random_country.get_attribute("value"))
 
     def enter_postal_code(self, postal_code):
         self.driver.find_element(*Locators.POSTAL_CODE).send_keys(postal_code)
@@ -39,10 +48,10 @@ class RegistrationPage(BasePage):
     def enter_phone(self, phone):
         self.driver.find_element(*Locators.PHONE).send_keys(phone)
 
-    def enter_email(self, email):
+    def enter_registration_email(self, email):
         self.driver.find_element(*Locators.EMAIL).send_keys(email)
 
-    def enter_password(self, password):
+    def enter_registration_password(self, password):
         self.driver.find_element(*Locators.PASSWORD).send_keys(password)
 
     def click_register_button(self):
