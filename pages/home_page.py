@@ -29,17 +29,17 @@ class HomePage(BasePage):
             prices.append(float(price_value))
         return prices
 
-    def sort_price_low_to_high(self):
+    def sort_by(self, option):
         sort_options = self.driver.find_element(*Locators.SORT_LIST)
         select = Select(sort_options)
-        select.select_by_value('price,asc')
+        select.select_by_value(option)
         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locators.SORTING_COMPLETED))
 
+    def sort_price_low_to_high(self):
+        self.sort_by('price,asc')
+
     def sort_price_high_to_low(self):
-        sort_options = self.driver.find_element(*Locators.SORT_LIST)
-        select = Select(sort_options)
-        select.select_by_value('price,desc')
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locators.SORTING_COMPLETED))
+        self.sort_by('price,desc')
 
     def _verify_page(self):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.SORT_LIST))
