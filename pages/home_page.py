@@ -11,6 +11,8 @@ class Locators:
     PRODUCT_PRICE = (By.CSS_SELECTOR, "[data-test='product-price']")
     SORT_LIST = (By.CSS_SELECTOR, "[data-test='sort']")
     SORTING_COMPLETED = (By.CSS_SELECTOR, "[data-test='sorting_completed']")
+    PRODUCT_TITLE = (By.CSS_SELECTOR, "[data-test='product-name']")
+    FILTERING_COMPLETED = (By.CSS_SELECTOR, "[data-test='filter_completed']")
 
 class HomePage(BasePage):
     """
@@ -40,6 +42,19 @@ class HomePage(BasePage):
 
     def sort_price_high_to_low(self):
         self.sort_by('price,desc')
+
+    def get_product_titles(self):
+        elements = self.driver.find_elements(*Locators.PRODUCT_TITLE)
+        titles = []
+        for element in elements:
+            titles.append(element.text.lower())
+        return titles
+
+    def filter_by_category(self, category):
+        locator = (By.XPATH, f"//label[contains(text(), '{category}')]")
+        category_checkbox = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(locator))
+        category_checkbox.click()
+        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locators.FILTERING_COMPLETED))
 
     def _verify_page(self):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.SORT_LIST))
