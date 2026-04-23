@@ -4,6 +4,7 @@ from pages.base_page import BasePage
 from pages.login_page import LoginPage
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
+from pages.product_page import ProductPage
 
 
 class Locators:
@@ -13,6 +14,8 @@ class Locators:
     SORTING_COMPLETED = (By.CSS_SELECTOR, "[data-test='sorting_completed']")
     PRODUCT_TITLE = (By.CSS_SELECTOR, "[data-test='product-name']")
     FILTERING_COMPLETED = (By.CSS_SELECTOR, "[data-test='filter_completed']")
+    PRODUCT_CARDS = (By.CSS_SELECTOR, "a[data-test^='product-']")
+    OUT_OF_STOCK_PRODUCT = (By.CSS_SELECTOR, "a[data-test='out-of-stock']")
 
 class HomePage(BasePage):
     """
@@ -55,6 +58,15 @@ class HomePage(BasePage):
         category_checkbox = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(locator))
         category_checkbox.click()
         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locators.FILTERING_COMPLETED))
+
+    def open_first_available_product(self):
+        products = self.driver.find_elements(*Locators.PRODUCT_CARDS)
+        for product in products:
+            out_of_stock = product.find_elements(*Locators.OUT_OF_STOCK_PRODUCT)
+            if not out_of_stock:
+                WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(product)).click()
+                return ProductPage(self.driver)
+        raise Exception("No available products found")
 
     def _verify_page(self):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.SORT_LIST))
