@@ -9,4 +9,11 @@ class TestCart(BaseTest):
     def test_add_product_to_cart(self):
         self.product_page.add_product_to_cart()
         quantity = self.product_page.get_cart_quantity()
+        product_name = self.product_page.get_product_name()
+        product_price = self.product_page.get_product_price()
         self.assertEqual(1, quantity)
+        self.cart_page = self.product_page.go_to_cart()
+        cart_product_name = self.cart_page.get_cart_product_name()
+        cart_total_price = self.cart_page.get_cart_total_price()
+        self.assertEqual(product_name, cart_product_name)
+        self.assertEqual(product_price*quantity, cart_total_price)

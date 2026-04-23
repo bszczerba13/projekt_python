@@ -2,11 +2,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pages.base_page import BasePage
+from pages.cart_page import CartPage
+
 
 class Locators:
     ADD_TO_CART_BUTTON = (By.CSS_SELECTOR, "[data-test='add-to-cart']")
     CART_BUTTON = (By.CSS_SELECTOR, "[data-test='nav-cart']")
     CART_QUANTITY = (By.CSS_SELECTOR, "[data-test='cart-quantity']")
+    PRODUCT_PRICE = (By.CSS_SELECTOR, "[data-test='unit-price']")
+    PRODUCT_NAME = (By.CSS_SELECTOR, "[data-test='product-name']")
 
 class ProductPage(BasePage):
 
@@ -21,6 +25,15 @@ class ProductPage(BasePage):
     def go_to_cart(self):
         cart_button = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locators.CART_BUTTON))
         cart_button.click()
+        return CartPage(self.driver)
+
+    def get_product_price(self):
+        price = self.driver.find_element(*Locators.PRODUCT_PRICE).text
+        return float(price)
+
+    def get_product_name(self):
+        product_name = self.driver.find_element(*Locators.PRODUCT_NAME).text.strip()
+        return product_name
 
     def _verify_page(self):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.ADD_TO_CART_BUTTON))

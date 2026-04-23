@@ -70,3 +70,4 @@ class HomePage(BasePage):
 
     def _verify_page(self):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.SORT_LIST))
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.PRODUCT_CARDS))
