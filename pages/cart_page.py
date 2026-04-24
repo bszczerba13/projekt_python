@@ -13,15 +13,19 @@ class Locators:
 class CartPage(BasePage):
 
     def get_cart_product_name(self):
-            cart_product_name = self.driver.find_element(*Locators.CART_PRODUCT_NAME).text.strip()
-            return cart_product_name
+        cart_product_name = self.driver.find_element(*Locators.CART_PRODUCT_NAME).text.strip()
+        return cart_product_name
 
     def get_cart_total_price(self):
-            cart_total_price = self.driver.find_element(*Locators.CART_TOTAL_PRICE).text
-            return float(cart_total_price.replace('$', '').strip())
+        cart_total_price = self.driver.find_element(*Locators.CART_TOTAL_PRICE).text
+        return float(cart_total_price.replace('$', '').strip())
 
     def remove_product(self):
-            self.driver.find_element(*Locators.CART_PRODUCT_NAME).click()
+        self.driver.find_element(*Locators.REMOVE_PRODUCT_BUTTON).click()
+
+    def get_empty_cart_info(self):
+        info = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.EMPTY_CART_INFO)).text
+        return info
 
     def _verify_page(self):
-            WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.CART_PRODUCT_NAME))
+        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.CART_PRODUCT_NAME))

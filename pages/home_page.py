@@ -15,7 +15,7 @@ class Locators:
     PRODUCT_TITLE = (By.CSS_SELECTOR, "[data-test='product-name']")
     FILTERING_COMPLETED = (By.CSS_SELECTOR, "[data-test='filter_completed']")
     PRODUCT_CARDS = (By.CSS_SELECTOR, "a[data-test^='product-']")
-    OUT_OF_STOCK_PRODUCT = (By.CSS_SELECTOR, "a[data-test='out-of-stock']")
+    OUT_OF_STOCK_PRODUCT = (By.CSS_SELECTOR, "[data-test='out-of-stock']")
 
 class HomePage(BasePage):
     """

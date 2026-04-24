@@ -17,3 +17,10 @@ class TestCart(BaseTest):
         cart_total_price = self.cart_page.get_cart_total_price()
         self.assertEqual(product_name, cart_product_name)
         self.assertEqual(product_price*quantity, cart_total_price)
+
+    def test_remove_product_from_cart(self):
+        self.product_page.add_product_to_cart()
+        self.cart_page = self.product_page.go_to_cart()
+        self.cart_page.remove_product()
+        empty_cart_info = self.cart_page.get_empty_cart_info()
+        self.assertIn("The cart is empty", empty_cart_info)
