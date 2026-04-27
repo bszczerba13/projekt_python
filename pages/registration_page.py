@@ -2,8 +2,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from pages.base_page import BasePage
-from selenium.webdriver.support.ui import Select
-import random
 
 class Locators:
     FIRST_NAME = (By.CSS_SELECTOR, "[data-test='first-name']")
@@ -28,11 +26,7 @@ class RegistrationPage(BasePage):
         self.driver.find_element(*Locators.DATE_OF_BIRTH).send_keys(date_of_birth)
 
     def select_country(self):
-        countries_list = self.driver.find_element(*Locators.COUNTRY)
-        select = Select(countries_list)
-        countries = select.options
-        index = random.randint(1, len(countries)-1)
-        select.select_by_index(index)
+        self.select_random_option(Locators.COUNTRY)
 
     def enter_postal_code(self, postal_code):
         self.driver.find_element(*Locators.POSTAL_CODE).send_keys(postal_code)
