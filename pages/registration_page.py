@@ -10,10 +10,14 @@ class Locators:
     COUNTRY = (By.CSS_SELECTOR, "[data-test='country']")
     POSTAL_CODE = (By.CSS_SELECTOR, "[data-test='postal_code']")
     HOUSE_NUMBER = (By.CSS_SELECTOR, "[data-test='house_number']")
+    STREET = (By.CSS_SELECTOR, "[data-test='street']")
+    CITY = (By.CSS_SELECTOR, "[data-test='city']")
+    STATE = (By.CSS_SELECTOR, "[data-test='state']")
     PHONE = (By.CSS_SELECTOR, "[data-test='phone']")
     EMAIL = (By.CSS_SELECTOR, "[data-test='email']")
     PASSWORD = (By.CSS_SELECTOR, "[data-test='password']")
     REGISTER_BUTTON = (By.CSS_SELECTOR, "[data-test='register-submit']")
+    AUTOFILL_LOADER = (By.CSS_SELECTOR, "[data-test='postcode-lookup-loading']")
 
 class RegistrationPage(BasePage):
     def enter_first_name(self, first_name):
@@ -45,6 +49,30 @@ class RegistrationPage(BasePage):
 
     def click_register_button(self):
         self.driver.find_element(*Locators.REGISTER_BUTTON).click()
+
+    def get_street_value(self):
+        street_value = self.driver.find_element(*Locators.STREET).get_attribute("value")
+        return street_value
+
+    def get_city_value(self):
+        city_value = self.driver.find_element(*Locators.CITY).get_attribute("value")
+        return city_value
+
+    def get_state_value(self):
+        state_value = self.driver.find_element(*Locators.STATE).get_attribute("value")
+        return state_value
+
+    def enter_street(self, street):
+        self.driver.find_element(*Locators.STREET).send_keys(street)
+
+    def enter_city(self, city):
+        self.driver.find_element(*Locators.CITY).send_keys(city)
+
+    def enter_state(self, state):
+        self.driver.find_element(*Locators.STATE).send_keys(state)
+
+    def wait_for_autofill_loader(self):
+        WebDriverWait(self.driver, 10).until(EC.invisibility_of_element_located(Locators.AUTOFILL_LOADER))
 
     def _verify_page(self):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.FIRST_NAME))

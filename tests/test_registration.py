@@ -18,5 +18,12 @@ class RegistrationTest(BaseTest):
         self.registration_page.enter_phone(self.data.PHONE_NUMBER)
         self.registration_page.enter_registration_email(self.data.EMAIL_ADDRESS)
         self.registration_page.enter_registration_password(self.data.PASSWORD)
+        self.registration_page.wait_for_autofill_loader()
+        if self.registration_page.get_street_value() == "":
+            self.registration_page.enter_street(self.data.STREET)
+        if self.registration_page.get_city_value() == "":
+            self.registration_page.enter_city(self.data.CITY)
+        if self.registration_page.get_state_value() == "":
+            self.registration_page.enter_state(self.data.STATE)
         self.registration_page.click_register_button()
         self.assertTrue(self.login_page.is_page_title_visible())

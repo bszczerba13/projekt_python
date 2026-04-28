@@ -14,8 +14,12 @@ class Locators:
     GUEST_DATA_SUMMARY = (By.XPATH, "//p[contains(text(), 'Continuing as guest')]")
     PROCEED_TO_CHECKOUT_BUTTON_SIGN_IN_STEP = (By.CSS_SELECTOR, "[data-test='proceed-2-guest']")
     COUNTRY_SELECT = (By.CSS_SELECTOR, "[data-test='country']")
+    ORDER_STREET = (By.CSS_SELECTOR, "[data-test='street']")
+    ORDER_CITY = (By.CSS_SELECTOR, "[data-test='city']")
+    ORDER_STATE = (By.CSS_SELECTOR, "[data-test='state']")
     POSTAL_CODE = (By.CSS_SELECTOR, "[data-test='postal_code']")
     HOUSE_NUMBER = (By.CSS_SELECTOR, "[data-test='house_number']")
+    AUTOFILL_LOADER = (By.CSS_SELECTOR, "[data-test='postcode-lookup-loading']")
     PROCEED_TO_CHECKOUT_BUTTON_BILLING_ADDRESS_STEP = (By.CSS_SELECTOR, "[data-test='proceed-3']")
     PAYMENT_METHOD = (By.CSS_SELECTOR, "[data-test='payment-method']")
     CREDIT_CARD_NUMBER = (By.CSS_SELECTOR, "[data-test='credit_card_number']")
@@ -89,6 +93,30 @@ class CheckoutPage(BasePage):
     def get_order_confirmation_message(self):
         order_confirmation_message = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.ORDER_CONFIRMATION_MESSAGE))
         return order_confirmation_message.text
+
+    def get_order_street(self):
+        order_street_value = self.driver.find_element(*Locators.ORDER_STREET).get_property("value")
+        return order_street_value
+
+    def get_order_city(self):
+        order_city_value = self.driver.find_element(*Locators.ORDER_CITY).get_attribute("value")
+        return order_city_value
+
+    def get_order_state(self):
+        order_state_value = self.driver.find_element(*Locators.ORDER_STATE).get_attribute("value")
+        return order_state_value
+
+    def wait_for_autofill(self):
+        WebDriverWait(self.driver, 10).until(EC.invisibility_of_element_located(Locators.AUTOFILL_LOADER))
+
+    def enter_order_street(self, order_street):
+        self.driver.find_element(*Locators.ORDER_STREET).send_keys(order_street)
+
+    def enter_order_city(self, order_city):
+        self.driver.find_element(*Locators.ORDER_CITY).send_keys(order_city)
+
+    def enter_order_state(self, order_state):
+        self.driver.find_element(*Locators.ORDER_STATE).send_keys(order_state)
 
     def _verify_page(self):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.GUEST_TAB))
