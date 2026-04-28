@@ -18,6 +18,7 @@ class Locators:
     PASSWORD = (By.CSS_SELECTOR, "[data-test='password']")
     REGISTER_BUTTON = (By.CSS_SELECTOR, "[data-test='register-submit']")
     AUTOFILL_LOADER = (By.CSS_SELECTOR, "[data-test='postcode-lookup-loading']")
+    MISSING_EMAIL_MESSAGE = (By.CSS_SELECTOR, "[data-test='email-error']")
 
 class RegistrationPage(BasePage):
     def enter_first_name(self, first_name):
@@ -73,6 +74,10 @@ class RegistrationPage(BasePage):
 
     def wait_for_autofill_loader(self):
         WebDriverWait(self.driver, 10).until(EC.invisibility_of_element_located(Locators.AUTOFILL_LOADER))
+
+    def get_missing_email_error_message(self):
+        error_message = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.MISSING_EMAIL_MESSAGE)).text
+        return error_message
 
     def _verify_page(self):
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.FIRST_NAME))

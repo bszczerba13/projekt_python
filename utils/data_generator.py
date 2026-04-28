@@ -33,3 +33,9 @@ class DataGenerator:
             "city": self.fake.city(),
             "state": self.fake.state(),
         }
+
+    def invalid_login_data_generator(self):
+        return {
+            "email_address": self.fake.email(),
+            "password": self.fake.password(length=5),
+        }
