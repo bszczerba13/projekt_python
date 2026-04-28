@@ -2,12 +2,21 @@ from tests.base_test import BaseTest
 from utils.data_generator import DataGenerator
 
 class TestCheckout(BaseTest):
+    """
+    Checkout test cases.
+    """
     def setUp(self):
+        """
+         Set up for checkout test.
+        """
         super().setUp()
         self.product_page = self.home_page.open_first_available_product()
         self.order_data = DataGenerator().order_data_generator()
 
     def test_checkout(self):
+        """
+        Verify guest checkout flow.
+        """
         self.product_page.add_product_to_cart()
         self.cart_page = self.product_page.go_to_cart()
         self.checkout_page = self.cart_page.go_to_checkout()
@@ -36,7 +45,7 @@ class TestCheckout(BaseTest):
         self.checkout_page.enter_card_number(self.order_data["credit_card_number"])
         self.checkout_page.enter_card_expiration_date(self.order_data["card_expiration_date"])
         self.checkout_page.enter_card_cvv(self.order_data["card_cvv"])
-        self.checkout_page.enter_card_holder_name(f"{self.order_data["first_name"]} {self.order_data["last_name"]}")
+        self.checkout_page.enter_card_holder_name(f"{self.order_data['first_name']} {self.order_data['last_name']}")
         self.checkout_page.click_confirm_button()
         payment_success_message = self.checkout_page.get_payment_success_message().lower()
         self.assertIn("success", payment_success_message)

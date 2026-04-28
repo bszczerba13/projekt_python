@@ -2,13 +2,22 @@ from utils.data_generator import DataGenerator
 from tests.base_test import BaseTest
 
 class RegistrationTest(BaseTest):
+    """
+    Registration test cases.
+    """
     def setUp(self):
+        """
+        Set up registration test data.
+        """
         super().setUp()
         self.login_page = self.home_page.click_sign_in()
         self.registration_page = self.login_page.click_register_link()
         self.registration_data = DataGenerator().registration_data_generator()
 
     def test_registration(self):
+        """
+        Verify successful user registration.
+        """
         self.registration_page.enter_first_name(self.registration_data["first_name"])
         self.registration_page.enter_last_name(self.registration_data["last_name"])
         self.registration_page.enter_date_of_birth(self.registration_data["date_of_birth"])
@@ -29,6 +38,9 @@ class RegistrationTest(BaseTest):
         self.assertTrue(self.login_page.is_page_title_visible())
 
     def test_registration_missing_email(self):
+        """
+        Verify registration validation when email is missing.
+        """
         self.registration_page.enter_first_name(self.registration_data["first_name"])
         self.registration_page.enter_last_name(self.registration_data["last_name"])
         self.registration_page.enter_date_of_birth(self.registration_data["date_of_birth"])

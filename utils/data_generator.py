@@ -1,10 +1,16 @@
 from faker import Faker
 
 class DataGenerator:
+    """
+    Generate test data for automated tests.
+    """
     def __init__(self):
         self.fake = Faker()
 
     def registration_data_generator(self):
+        """
+        Generate registration test data.
+        """
         return {
             "first_name": self.fake.first_name(),
             "last_name": self.fake.last_name(),
@@ -20,6 +26,9 @@ class DataGenerator:
         }
 
     def order_data_generator(self):
+        """
+        Generate checkout order test data.
+        """
         return {
             "first_name": self.fake.first_name(),
             "last_name": self.fake.last_name(),
@@ -35,6 +44,9 @@ class DataGenerator:
         }
 
     def invalid_login_data_generator(self):
+        """
+        Generate invalid login credentials.
+        """
         return {
             "email_address": self.fake.email(),
             "password": self.fake.password(length=5),

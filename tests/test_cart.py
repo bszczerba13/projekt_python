@@ -1,12 +1,20 @@
 from tests.base_test import BaseTest
 
-
 class TestCart(BaseTest):
+    """
+    Shopping cart test cases.
+    """
     def setUp(self):
+        """
+         Set up for cart tests.
+        """
         super().setUp()
         self.product_page = self.home_page.open_first_available_product()
 
     def test_add_product_to_cart(self):
+        """
+        Verify adding product to cart.
+        """
         self.product_page.add_product_to_cart()
         quantity = self.product_page.get_cart_quantity()
         product_name = self.product_page.get_product_name()
@@ -19,6 +27,9 @@ class TestCart(BaseTest):
         self.assertEqual(product_price*quantity, cart_total_price)
 
     def test_remove_product_from_cart(self):
+        """
+        Verify removing product from cart.
+        """
         self.product_page.add_product_to_cart()
         self.cart_page = self.product_page.go_to_cart()
         self.cart_page.remove_product()

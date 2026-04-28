@@ -7,8 +7,17 @@ class Locators:
     PAGE_TITLE = (By.CSS_SELECTOR, "[data-test='page-title']")
 
 class AccountPage(BasePage):
+    """
+    Page object for account page.
+    """
     def get_page_title(self):
+        """
+        Return account page title.
+        """
         return self.driver.find_element(*Locators.PAGE_TITLE).text
 
     def _verify_page(self):
+        """
+        Verify account page is loaded.
+        """
         WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.PAGE_TITLE))
