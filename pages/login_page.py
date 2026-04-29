@@ -1,3 +1,4 @@
+from selenium.common import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -12,6 +13,7 @@ class Locators:
     REGISTER_ACCOUNT_LINK = (By.CSS_SELECTOR, "[data-test='register-link']")
     LOGIN_PAGE_TITLE = (By.XPATH, "//h3[text()='Login']")
     INVALID_LOGIN_DATA_MESSAGE = (By.CSS_SELECTOR, "[data-test='login-error']")
+    LOCKED_ACCOUNT_MESSAGE = (By.XPATH, "//div[contains(text(),'Account locked')]")
 
 class LoginPage(BasePage):
     """
@@ -34,7 +36,6 @@ class LoginPage(BasePage):
         Submit login form.
         """
         self.driver.find_element(*Locators.LOGIN_BUTTON).click()
-        return AccountPage(self.driver)
 
     def click_register_link(self):
         """
@@ -56,6 +57,16 @@ class LoginPage(BasePage):
         """
         error_message = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.INVALID_LOGIN_DATA_MESSAGE)).text
         return error_message
+
+    def is_account_locked(self):
+        """
+        Return True if user account is locked.
+        """
+        try:
+            WebDriverWait(self.driver, 2).until(EC.visibility_of_element_located(Locators.LOCKED_ACCOUNT_MESSAGE))
+            return True
+        except TimeoutException:
+            return False
 
     def _verify_page(self):
         """

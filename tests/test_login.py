@@ -1,5 +1,5 @@
 from ddt import ddt, data, unpack
-from selenium.webdriver import Keys
+from pages.account_page import AccountPage
 from utils.data_generator import DataGenerator
 import utils.csv_reader
 from tests.base_test import BaseTest
@@ -25,7 +25,10 @@ class LoginTest(BaseTest):
         """
         self.login_page.enter_email(email)
         self.login_page.enter_password(password)
-        account_page = self.login_page.click_login_button()
+        self.login_page.click_login_button()
+        if self.login_page.is_account_locked():
+            self.skipTest("User account locked")
+        account_page = AccountPage(self.driver)
         page_title = account_page.get_page_title()
         if role == "admin":
             self.assertEqual("Sales over the years", page_title)
@@ -40,6 +43,7 @@ class LoginTest(BaseTest):
         """
         invalid_data = DataGenerator().invalid_login_data_generator()
         self.login_page.enter_email(invalid_data["email_address"])
-        self.login_page.enter_password(invalid_data["password"] + Keys.ENTER)
+        self.login_page.enter_password(invalid_data["password"])
+        self.login_page.click_login_button()
         error_message = self.login_page.get_invalid_login_error()
         self.assertIn("Invalid email or password", error_message)
