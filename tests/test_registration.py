@@ -47,9 +47,9 @@ class RegistrationTest(BaseTest):
         self.registration_page.select_country()
         self.registration_page.enter_postal_code(self.registration_data["postal_code"])
         self.registration_page.enter_house_number(self.registration_data["house_number"])
+        self.registration_page.wait_for_autofill_loader()
         self.registration_page.enter_phone(self.registration_data["phone_number"])
         self.registration_page.enter_registration_password(self.registration_data["password"])
-        self.registration_page.wait_for_autofill_loader()
         if self.registration_page.get_street_value() == "":
             self.registration_page.enter_street(self.registration_data["street"])
         if self.registration_page.get_city_value() == "":

@@ -2,7 +2,6 @@ from selenium.common import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-from pages.account_page import AccountPage
 from pages.base_page import BasePage
 from pages.registration_page import RegistrationPage
 
