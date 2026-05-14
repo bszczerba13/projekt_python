@@ -1,54 +1,44 @@
-from tests.base_test import BaseTest
-from utils.data_generator import DataGenerator
-
-class TestCheckout(BaseTest):
+class TestCheckout:
     """
     Checkout test cases.
     """
-    def setUp(self):
-        """
-         Set up for checkout test.
-        """
-        super().setUp()
-        self.product_page = self.home_page.open_first_available_product()
-        self.order_data = DataGenerator().order_data_generator()
 
-    def test_checkout(self):
+    def test_checkout(self, product_page, order_data):
         """
         Verify guest checkout flow.
         """
-        self.product_page.add_product_to_cart()
-        self.cart_page = self.product_page.go_to_cart()
-        self.checkout_page = self.cart_page.go_to_checkout()
-        self.checkout_page.go_to_guest_tab()
-        self.checkout_page.enter_guest_email(self.order_data["email_address"])
-        self.checkout_page.enter_guest_first_name(self.order_data["first_name"])
-        self.checkout_page.enter_guest_last_name(self.order_data["last_name"])
-        self.checkout_page.click_continue_as_guest_button()
-        guest_data = self.checkout_page.get_guest_data_summary()
-        self.assertIn(self.order_data["email_address"], guest_data)
-        self.assertIn(self.order_data["first_name"], guest_data)
-        self.assertIn(self.order_data["last_name"], guest_data)
-        self.checkout_page.go_to_billing_address_step()
-        self.checkout_page.select_guest_country()
-        self.checkout_page.enter_postal_code(self.order_data["postal_code"])
-        self.checkout_page.enter_house_number(self.order_data["house_number"])
-        self.checkout_page.wait_for_autofill()
-        if self.checkout_page.get_order_street() == "":
-            self.checkout_page.enter_order_street(self.order_data["street"])
-        if self.checkout_page.get_order_city() == "":
-            self.checkout_page.enter_order_city(self.order_data["city"])
-        if self.checkout_page.get_order_state() == "":
-            self.checkout_page.enter_order_state(self.order_data["state"])
-        self.checkout_page.go_to_payment_step()
-        self.checkout_page.choose_payment_method("credit-card")
-        self.checkout_page.enter_card_number(self.order_data["credit_card_number"])
-        self.checkout_page.enter_card_expiration_date(self.order_data["card_expiration_date"])
-        self.checkout_page.enter_card_cvv(self.order_data["card_cvv"])
-        self.checkout_page.enter_card_holder_name(f"{self.order_data['first_name']} {self.order_data['last_name']}")
-        self.checkout_page.click_confirm_button()
-        payment_success_message = self.checkout_page.get_payment_success_message().lower()
-        self.assertIn("success", payment_success_message)
-        self.checkout_page.click_confirm_button()
-        order_confirmation_message = self.checkout_page.get_order_confirmation_message().lower()
-        self.assertIn("your invoice number", order_confirmation_message)
+        product_page.add_product_to_cart()
+        cart_page = product_page.go_to_cart()
+        checkout_page = cart_page.go_to_checkout()
+        checkout_page.go_to_guest_tab()
+        checkout_page.enter_guest_email(order_data["email_address"])
+        checkout_page.enter_guest_first_name(order_data["first_name"])
+        checkout_page.enter_guest_last_name(order_data["last_name"])
+        checkout_page.click_continue_as_guest_button()
+        guest_data = checkout_page.get_guest_data_summary()
+        assert order_data["email_address"] in guest_data
+        assert order_data["first_name"] in guest_data
+        assert order_data["last_name"] in guest_data
+        checkout_page.go_to_billing_address_step()
+        checkout_page.select_guest_country()
+        checkout_page.enter_postal_code(order_data["postal_code"])
+        checkout_page.enter_house_number(order_data["house_number"])
+        checkout_page.wait_for_autofill()
+        if checkout_page.get_order_street() == "":
+            checkout_page.enter_order_street(order_data["street"])
+        if checkout_page.get_order_city() == "":
+            checkout_page.enter_order_city(order_data["city"])
+        if checkout_page.get_order_state() == "":
+            checkout_page.enter_order_state(order_data["state"])
+        checkout_page.go_to_payment_step()
+        checkout_page.choose_payment_method("credit-card")
+        checkout_page.enter_card_number(order_data["credit_card_number"])
+        checkout_page.enter_card_expiration_date(order_data["card_expiration_date"])
+        checkout_page.enter_card_cvv(order_data["card_cvv"])
+        checkout_page.enter_card_holder_name(f"{order_data['first_name']} {order_data['last_name']}")
+        checkout_page.click_confirm_button()
+        payment_success_message = checkout_page.get_payment_success_message().lower()
+        assert "success" in payment_success_message
+        checkout_page.click_confirm_button()
+        order_confirmation_message = checkout_page.get_order_confirmation_message().lower()
+        assert "your invoice number" in order_confirmation_message

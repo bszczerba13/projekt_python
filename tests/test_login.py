@@ -1,49 +1,37 @@
-from ddt import ddt, data, unpack
+import pytest
 from pages.account_page import AccountPage
-from utils.data_generator import DataGenerator
 import utils.csv_reader
-from tests.base_test import BaseTest
 
-@ddt
-class LoginTest(BaseTest):
+class TestLogin:
     """
     Login test cases.
     """
-    def setUp(self):
-        """
-        Set up login page before each test.
-        """
-        super().setUp()
-        self.login_page = self.home_page.click_sign_in()
+    @pytest.mark.parametrize("email,password,role", utils.csv_reader.get_csv_data("test_data/users.csv"))
 
-    @data(*utils.csv_reader.get_csv_data("test_data/users.csv"))
-    @unpack
-
-    def test_login(self, email, password, role):
+    def test_login(self, login_page,driver, email, password, role):
         """
         Verify login for different user roles.
         """
-        self.login_page.enter_email(email)
-        self.login_page.enter_password(password)
-        self.login_page.click_login_button()
-        if self.login_page.is_account_locked():
-            self.skipTest("User account locked")
-        account_page = AccountPage(self.driver)
+        login_page.enter_email(email)
+        login_page.enter_password(password)
+        login_page.click_login_button()
+        if login_page.is_account_locked():
+            pytest.skip("User account locked")
+        account_page = AccountPage(driver)
         page_title = account_page.get_page_title()
         if role == "admin":
-            self.assertEqual("Sales over the years", page_title)
+            assert "Sales over the years" in page_title
         elif role == "user":
-            self.assertEqual("My account", page_title)
+            assert "My account" in page_title
         else:
-            self.fail(f"Unexpected role: {role}")
+            pytest.fail(f"Unexpected role: {role}")
 
-    def test_invalid_login_data(self):
+    def test_invalid_login_data(self, login_page, invalid_login_data):
         """
         Verify login fails with invalid credentials.
         """
-        invalid_data = DataGenerator().invalid_login_data_generator()
-        self.login_page.enter_email(invalid_data["email_address"])
-        self.login_page.enter_password(invalid_data["password"])
-        self.login_page.click_login_button()
-        error_message = self.login_page.get_invalid_login_error()
-        self.assertIn("Invalid email or password", error_message)
+        login_page.enter_email(invalid_login_data["email_address"])
+        login_page.enter_password(invalid_login_data["password"])
+        login_page.click_login_button()
+        error_message = login_page.get_invalid_login_error()
+        assert "Invalid email or password" in error_message
