@@ -1,6 +1,4 @@
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from pages.base_page import BasePage
 
 class Locators:
@@ -14,10 +12,10 @@ class AccountPage(BasePage):
         """
         Return account page title.
         """
-        return self.driver.find_element(*Locators.PAGE_TITLE).text
+        return self.get_text(Locators.PAGE_TITLE)
 
     def _verify_page(self):
         """
         Verify account page is loaded.
         """
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.PAGE_TITLE))
+        self.wait_for_visibility(Locators.PAGE_TITLE)

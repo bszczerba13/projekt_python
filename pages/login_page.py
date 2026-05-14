@@ -1,7 +1,5 @@
 from selenium.common import TimeoutException
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from pages.base_page import BasePage
 from pages.registration_page import RegistrationPage
 
@@ -22,47 +20,49 @@ class LoginPage(BasePage):
         """
         Enter user email.
         """
-        self.driver.find_element(*Locators.LOGIN_EMAIL).send_keys(email)
+        self.enter_text(Locators.LOGIN_EMAIL, email)
 
     def enter_password(self, password):
         """
         Enter user password.
         """
-        self.driver.find_element(*Locators.LOGIN_PASSWORD).send_keys(password)
+        self.enter_text(Locators.LOGIN_PASSWORD, password)
 
     def click_login_button(self):
         """
         Submit login form.
         """
-        self.driver.find_element(*Locators.LOGIN_BUTTON).click()
+        self.click(Locators.LOGIN_BUTTON)
 
     def click_register_link(self):
         """
         Open registration page.
         """
-        self.driver.find_element(*Locators.REGISTER_ACCOUNT_LINK).click()
+        self.click(Locators.REGISTER_ACCOUNT_LINK)
         return RegistrationPage(self.driver)
 
     def is_page_title_visible(self):
         """
         Return True if login page title is visible.
         """
-        login_page_title = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.LOGIN_PAGE_TITLE))
-        return login_page_title.is_displayed()
+        try:
+            self.wait_for_visibility(Locators.LOGIN_PAGE_TITLE)
+            return True
+        except TimeoutException:
+            return False
 
     def get_invalid_login_error(self):
         """
         Return invalid login error message.
         """
-        error_message = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.INVALID_LOGIN_DATA_MESSAGE)).text
-        return error_message
+        return self.get_text(Locators.INVALID_LOGIN_DATA_MESSAGE)
 
     def is_account_locked(self):
         """
         Return True if user account is locked.
         """
         try:
-            WebDriverWait(self.driver, 2).until(EC.visibility_of_element_located(Locators.LOCKED_ACCOUNT_MESSAGE))
+            self.quick_wait_for_visibility(Locators.LOCKED_ACCOUNT_MESSAGE)
             return True
         except TimeoutException:
             return False
@@ -71,4 +71,4 @@ class LoginPage(BasePage):
         """
         Verify login page is loaded.
         """
-        WebDriverWait(self.driver, 20).until(EC.visibility_of_element_located(Locators.LOGIN_EMAIL))
+        self.wait_for_visibility(Locators.LOGIN_EMAIL)

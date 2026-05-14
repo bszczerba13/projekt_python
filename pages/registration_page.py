@@ -1,6 +1,4 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pages.base_page import BasePage
 
 class Locators:
@@ -28,19 +26,19 @@ class RegistrationPage(BasePage):
         """
         Enter first name.
         """
-        self.driver.find_element(*Locators.FIRST_NAME).send_keys(first_name)
+        self.enter_text(Locators.FIRST_NAME, first_name)
 
     def enter_last_name(self, last_name):
         """
         Enter last name.
         """
-        self.driver.find_element(*Locators.LAST_NAME).send_keys(last_name)
+        self.enter_text(Locators.LAST_NAME, last_name)
 
     def enter_date_of_birth(self, date_of_birth):
         """
         Enter date of birth.
         """
-        self.driver.find_element(*Locators.DATE_OF_BIRTH).send_keys(date_of_birth)
+        self.enter_text(Locators.DATE_OF_BIRTH, date_of_birth)
 
     def select_country(self):
         """
@@ -52,92 +50,88 @@ class RegistrationPage(BasePage):
         """
         Enter postal code.
         """
-        self.driver.find_element(*Locators.POSTAL_CODE).send_keys(postal_code)
+        self.enter_text(Locators.POSTAL_CODE, postal_code)
 
     def enter_house_number(self, house_number):
         """
         Enter house number.
         """
-        self.driver.find_element(*Locators.HOUSE_NUMBER).send_keys(house_number)
+        self.enter_text(Locators.HOUSE_NUMBER, house_number)
 
     def enter_phone(self, phone):
         """
         Enter phone number.
         """
-        self.driver.find_element(*Locators.PHONE).send_keys(phone)
+        self.enter_text(Locators.PHONE, phone)
 
     def enter_registration_email(self, email):
         """
         Enter email address.
         """
-        self.driver.find_element(*Locators.EMAIL).send_keys(email)
+        self.enter_text(Locators.EMAIL, email)
 
     def enter_registration_password(self, password):
         """
         Enter password.
         """
-        self.driver.find_element(*Locators.PASSWORD).send_keys(password)
+        self.enter_text(Locators.PASSWORD, password)
 
     def click_register_button(self):
         """
         Submit registration form.
         """
-        self.driver.find_element(*Locators.REGISTER_BUTTON).click()
+        self.click(Locators.REGISTER_BUTTON)
 
     def get_street_value(self):
         """
         Return autofilled street value.
         """
-        street_value = self.driver.find_element(*Locators.STREET).get_attribute("value")
-        return street_value
+        return self.get_element_attribute(Locators.STREET, "value")
 
     def get_city_value(self):
         """
         Return autofilled city value.
         """
-        city_value = self.driver.find_element(*Locators.CITY).get_attribute("value")
-        return city_value
+        return self.get_element_attribute(Locators.CITY, "value")
 
     def get_state_value(self):
         """
         Return autofilled state value.
         """
-        state_value = self.driver.find_element(*Locators.STATE).get_attribute("value")
-        return state_value
+        return self.get_element_attribute(Locators.STATE, "value")
 
     def enter_street(self, street):
         """
         Enter street.
         """
-        self.driver.find_element(*Locators.STREET).send_keys(street)
+        self.enter_text(Locators.STREET, street)
 
     def enter_city(self, city):
         """
         Enter city.
         """
-        self.driver.find_element(*Locators.CITY).send_keys(city)
+        self.enter_text(Locators.CITY, city)
 
     def enter_state(self, state):
         """
         Enter state.
         """
-        self.driver.find_element(*Locators.STATE).send_keys(state)
+        self.enter_text(Locators.STATE, state)
 
     def wait_for_autofill_loader(self):
         """
         Wait until autofill is completed.
         """
-        WebDriverWait(self.driver, 10).until(EC.invisibility_of_element_located(Locators.AUTOFILL_LOADER))
+        self.wait_for_invisibility(Locators.AUTOFILL_LOADER)
 
     def get_missing_email_error_message(self):
         """
         Return missing email validation message.
         """
-        error_message = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.MISSING_EMAIL_MESSAGE)).text
-        return error_message
+        return self.get_text(Locators.MISSING_EMAIL_MESSAGE)
 
     def _verify_page(self):
         """
         Verify registration page is loaded.
         """
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.FIRST_NAME))
+        self.wait_for_visibility(Locators.FIRST_NAME)

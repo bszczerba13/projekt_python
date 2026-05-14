@@ -1,9 +1,6 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from pages.base_page import BasePage
 from pages.login_page import LoginPage
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support import expected_conditions as EC
 from pages.product_page import ProductPage
 
 class Locators:
@@ -25,14 +22,14 @@ class HomePage(BasePage):
         """
         Open Login page.
         """
-        self.driver.find_element(*Locators.SIGN_IN_LINK).click()
+        self.click(Locators.SIGN_IN_LINK)
         return LoginPage(self.driver)
 
     def get_product_prices(self):
         """
         Return list of product prices.
         """
-        elements = self.driver.find_elements(*Locators.PRODUCT_PRICE)
+        elements = self.get_elements(Locators.PRODUCT_PRICE)
         prices = []
         for element in elements:
             price_value = element.text.replace('$', '').strip()
@@ -43,10 +40,8 @@ class HomePage(BasePage):
         """
         Sort products by selected option.
         """
-        sort_options = self.driver.find_element(*Locators.SORT_LIST)
-        select = Select(sort_options)
-        select.select_by_value(option)
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locators.SORTING_COMPLETED))
+        self.select_by_value(Locators.SORT_LIST, option)
+        self.wait_for_presence(Locators.SORTING_COMPLETED)
 
     def sort_price_low_to_high(self):
         """
@@ -64,7 +59,7 @@ class HomePage(BasePage):
         """
         Return list of displayed product titles.
         """
-        elements = self.driver.find_elements(*Locators.PRODUCT_TITLE)
+        elements = self.get_elements(Locators.PRODUCT_TITLE)
         titles = []
         for element in elements:
             titles.append(element.text.lower())
@@ -75,19 +70,18 @@ class HomePage(BasePage):
         Filter products by category.
         """
         locator = (By.XPATH, f"//label[contains(text(), '{category}')]")
-        category_checkbox = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(locator))
-        category_checkbox.click()
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locators.FILTERING_COMPLETED))
+        self.click(locator)
+        self.wait_for_presence(Locators.FILTERING_COMPLETED)
 
     def open_first_available_product(self):
         """
         Open first available product page.
         """
-        products = self.driver.find_elements(*Locators.PRODUCT_CARDS)
+        products = self.get_elements(Locators.PRODUCT_CARDS)
         for product in products:
             out_of_stock = product.find_elements(*Locators.OUT_OF_STOCK_PRODUCT)
             if not out_of_stock:
-                WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(product)).click()
+                product.click()
                 return ProductPage(self.driver)
         raise Exception("No available products found")
 
@@ -95,5 +89,5 @@ class HomePage(BasePage):
         """
         Verify home page is loaded.
         """
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.SORT_LIST))
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.PRODUCT_CARDS))
+        self.wait_for_visibility(Locators.SORT_LIST)
+        self.wait_for_visibility(Locators.PRODUCT_CARDS)

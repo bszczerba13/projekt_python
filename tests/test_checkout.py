@@ -41,7 +41,7 @@ class TestCheckout(BaseTest):
         if self.checkout_page.get_order_state() == "":
             self.checkout_page.enter_order_state(self.order_data["state"])
         self.checkout_page.go_to_payment_step()
-        self.checkout_page.choose_payment_method()
+        self.checkout_page.choose_payment_method("credit-card")
         self.checkout_page.enter_card_number(self.order_data["credit_card_number"])
         self.checkout_page.enter_card_expiration_date(self.order_data["card_expiration_date"])
         self.checkout_page.enter_card_cvv(self.order_data["card_cvv"])

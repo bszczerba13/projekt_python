@@ -1,6 +1,4 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pages.base_page import BasePage
 from pages.cart_page import CartPage
 
@@ -19,40 +17,35 @@ class ProductPage(BasePage):
         """
         Add product to cart.
         """
-        button = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locators.ADD_TO_CART_BUTTON))
-        button.click()
+        self.click(Locators.ADD_TO_CART_BUTTON)
 
     def get_cart_quantity(self):
         """
         Return cart quantity.
         """
-        quantity = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.CART_QUANTITY))
-        return int(quantity.text)
+        return int(self.get_text(Locators.CART_QUANTITY))
 
     def go_to_cart(self):
         """
         Open shopping cart page.
         """
-        cart_button = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locators.CART_BUTTON))
-        cart_button.click()
+        self.click(Locators.CART_BUTTON)
         return CartPage(self.driver)
 
     def get_product_price(self):
         """
         Return current product price.
         """
-        price = self.driver.find_element(*Locators.PRODUCT_PRICE).text
-        return float(price)
+        return float(self.get_text(Locators.PRODUCT_PRICE))
 
     def get_product_name(self):
         """
         Return current product name.
         """
-        product_name = self.driver.find_element(*Locators.PRODUCT_NAME).text.strip()
-        return product_name
+        return self.get_text(Locators.PRODUCT_NAME)
 
     def _verify_page(self):
         """
         Verify product page is loaded.
         """
-        WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.ADD_TO_CART_BUTTON))
+        self.wait_for_visibility(Locators.ADD_TO_CART_BUTTON)
