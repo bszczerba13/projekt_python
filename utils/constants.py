@@ -22,3 +22,7 @@ USER_PAGE_TITLE = "My account"
 
 # Payment methods
 CREDIT_CARD = "credit-card"
+
+# Sorting
+SORT_PRICE_ASC = "price,asc"
+SORT_PRICE_DESC = "price,desc"

@@ -1,11 +1,9 @@
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
-from pages.cart_page import CartPage
+from pages.components.header_component import HeaderComponent
 
 class Locators:
     ADD_TO_CART_BUTTON = (By.CSS_SELECTOR, "[data-test='add-to-cart']")
-    CART_BUTTON = (By.CSS_SELECTOR, "[data-test='nav-cart']")
-    CART_QUANTITY = (By.CSS_SELECTOR, "[data-test='cart-quantity']")
     PRODUCT_PRICE = (By.CSS_SELECTOR, "[data-test='unit-price']")
     PRODUCT_NAME = (By.CSS_SELECTOR, "[data-test='product-name']")
 
@@ -13,24 +11,15 @@ class ProductPage(BasePage):
     """
     Page object for product details page.
     """
+    def __init__(self, driver):
+        super().__init__(driver)
+        self.header = HeaderComponent(driver)
+
     def add_product_to_cart(self):
         """
         Add product to cart.
         """
         self.click(Locators.ADD_TO_CART_BUTTON)
-
-    def get_cart_quantity(self):
-        """
-        Return cart quantity.
-        """
-        return int(self.get_text(Locators.CART_QUANTITY))
-
-    def go_to_cart(self):
-        """
-        Open shopping cart page.
-        """
-        self.click(Locators.CART_BUTTON)
-        return CartPage(self.driver)
 
     def get_product_price(self):
         """

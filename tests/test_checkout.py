@@ -10,7 +10,7 @@ class TestCheckout:
         Verify guest checkout flow.
         """
         product_page.add_product_to_cart()
-        cart_page = product_page.go_to_cart()
+        cart_page = product_page.header.go_to_cart()
         checkout_page = cart_page.go_to_checkout()
         checkout_page.go_to_guest_tab()
         checkout_page.enter_guest_email(order_data["email_address"])

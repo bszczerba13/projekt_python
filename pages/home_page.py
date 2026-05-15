@@ -1,15 +1,15 @@
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
-from pages.login_page import LoginPage
 from pages.product_page import ProductPage
+from utils.constants import SORT_PRICE_ASC, SORT_PRICE_DESC
+from pages.components.header_component import HeaderComponent
+from pages.components.filter_component import FilterComponent
 
 class Locators:
-    SIGN_IN_LINK = (By.CSS_SELECTOR, "[data-test='nav-sign-in']")
     PRODUCT_PRICE = (By.CSS_SELECTOR, "[data-test='product-price']")
     SORT_LIST = (By.CSS_SELECTOR, "[data-test='sort']")
     SORTING_COMPLETED = (By.CSS_SELECTOR, "[data-test='sorting_completed']")
     PRODUCT_TITLE = (By.CSS_SELECTOR, "[data-test='product-name']")
-    FILTERING_COMPLETED = (By.CSS_SELECTOR, "[data-test='filter_completed']")
     PRODUCT_CARDS = (By.CSS_SELECTOR, "a[data-test^='product-']")
     OUT_OF_STOCK_PRODUCT = (By.CSS_SELECTOR, "[data-test='out-of-stock']")
 
@@ -17,13 +17,10 @@ class HomePage(BasePage):
     """
     Page object for the home page.
     """
-
-    def click_sign_in(self):
-        """
-        Open Login page.
-        """
-        self.click(Locators.SIGN_IN_LINK)
-        return LoginPage(self.driver)
+    def __init__(self, driver):
+        super().__init__(driver)
+        self.header = HeaderComponent(driver)
+        self.filter = FilterComponent(driver)
 
     def get_product_prices(self):
         """
@@ -47,13 +44,13 @@ class HomePage(BasePage):
         """
         Sort products by price ascending.
         """
-        self.sort_by('price,asc')
+        self.sort_by(SORT_PRICE_ASC)
 
     def sort_price_high_to_low(self):
         """
         Sort products by price descending.
         """
-        self.sort_by('price,desc')
+        self.sort_by(SORT_PRICE_DESC)
 
     def get_product_titles(self):
         """
@@ -64,14 +61,6 @@ class HomePage(BasePage):
         for element in elements:
             titles.append(element.text.lower())
         return titles
-
-    def filter_by_category(self, category):
-        """
-        Filter products by category.
-        """
-        locator = (By.XPATH, f"//label[contains(text(), '{category}')]")
-        self.click(locator)
-        self.wait_for_presence(Locators.FILTERING_COMPLETED)
 
     def open_first_available_product(self):
         """

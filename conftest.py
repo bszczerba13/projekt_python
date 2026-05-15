@@ -36,7 +36,7 @@ def login_page(home_page):
     """
     Open login page.
     """
-    return home_page.click_sign_in()
+    return home_page.header.click_sign_in()
 
 @pytest.fixture
 def registration_page(login_page):
