@@ -2,6 +2,7 @@ import random
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from utils.constants import DEFAULT_TIMEOUT, QUICK_TIMEOUT
 
 
 class BasePage:
@@ -13,8 +14,8 @@ class BasePage:
         Initialize page object and verify page.
         """
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
-        self.quick_wait = WebDriverWait(driver, 2)
+        self.wait = WebDriverWait(driver, DEFAULT_TIMEOUT)
+        self.quick_wait = WebDriverWait(driver, QUICK_TIMEOUT)
         self._verify_page()
 
     def _verify_page(self):

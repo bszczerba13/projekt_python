@@ -1,4 +1,5 @@
 from pages.login_page import LoginPage
+from utils.constants import MISSING_EMAIL_MESSAGE
 
 class TestRegistration:
     """
@@ -49,4 +50,4 @@ class TestRegistration:
             registration_page.enter_state(registration_data["state"])
         registration_page.click_register_button()
         error_message = registration_page.get_missing_email_error_message()
-        assert "Email is required" in error_message
+        assert MISSING_EMAIL_MESSAGE in error_message

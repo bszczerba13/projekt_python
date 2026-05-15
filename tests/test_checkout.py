@@ -1,3 +1,5 @@
+from utils.constants import CREDIT_CARD, PAYMENT_SUCCESS_MESSAGE, ORDER_CONFIRMATION_MESSAGE
+
 class TestCheckout:
     """
     Checkout test cases.
@@ -31,14 +33,14 @@ class TestCheckout:
         if checkout_page.get_order_state() == "":
             checkout_page.enter_order_state(order_data["state"])
         checkout_page.go_to_payment_step()
-        checkout_page.choose_payment_method("credit-card")
+        checkout_page.choose_payment_method(CREDIT_CARD)
         checkout_page.enter_card_number(order_data["credit_card_number"])
         checkout_page.enter_card_expiration_date(order_data["card_expiration_date"])
         checkout_page.enter_card_cvv(order_data["card_cvv"])
         checkout_page.enter_card_holder_name(f"{order_data['first_name']} {order_data['last_name']}")
         checkout_page.click_confirm_button()
         payment_success_message = checkout_page.get_payment_success_message().lower()
-        assert "success" in payment_success_message
+        assert PAYMENT_SUCCESS_MESSAGE in payment_success_message
         checkout_page.click_confirm_button()
         order_confirmation_message = checkout_page.get_order_confirmation_message().lower()
-        assert "your invoice number" in order_confirmation_message
+        assert ORDER_CONFIRMATION_MESSAGE in order_confirmation_message

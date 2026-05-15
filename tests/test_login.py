@@ -1,6 +1,7 @@
 import pytest
 from pages.account_page import AccountPage
 import utils.csv_reader
+from utils.constants import ADMIN_ROLE, USER_ROLE, ADMIN_PAGE_TITLE, USER_PAGE_TITLE, INVALID_LOGIN_MESSAGE
 
 class TestLogin:
     """
@@ -8,7 +9,7 @@ class TestLogin:
     """
     @pytest.mark.parametrize("email,password,role", utils.csv_reader.get_csv_data("test_data/users.csv"))
 
-    def test_login(self, login_page,driver, email, password, role):
+    def test_login(self, login_page, driver, email, password, role):
         """
         Verify login for different user roles.
         """
@@ -19,10 +20,10 @@ class TestLogin:
             pytest.skip("User account locked")
         account_page = AccountPage(driver)
         page_title = account_page.get_page_title()
-        if role == "admin":
-            assert "Sales over the years" in page_title
-        elif role == "user":
-            assert "My account" in page_title
+        if role == ADMIN_ROLE:
+            assert ADMIN_PAGE_TITLE in page_title
+        elif role == USER_ROLE:
+            assert USER_PAGE_TITLE in page_title
         else:
             pytest.fail(f"Unexpected role: {role}")
 
@@ -34,4 +35,4 @@ class TestLogin:
         login_page.enter_password(invalid_login_data["password"])
         login_page.click_login_button()
         error_message = login_page.get_invalid_login_error()
-        assert "Invalid email or password" in error_message
+        assert INVALID_LOGIN_MESSAGE in error_message

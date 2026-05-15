@@ -1,3 +1,5 @@
+from utils.constants import EMPTY_CART_MESSAGE
+
 class TestCart:
     """
     Shopping cart test cases.
@@ -26,4 +28,4 @@ class TestCart:
         cart_page = product_page.go_to_cart()
         cart_page.remove_product()
         empty_cart_info = cart_page.get_empty_cart_info()
-        assert "The cart is empty" in empty_cart_info
+        assert EMPTY_CART_MESSAGE in empty_cart_info
