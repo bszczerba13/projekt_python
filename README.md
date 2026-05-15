@@ -1,6 +1,6 @@
 # Selenium UI Automation Framework (Python)
 
-Test automation framework for an e-commerce demo application built with Python, Selenium WebDriver and unittest using Page Object Model (POM).
+Test automation framework for an e-commerce demo application built with Python, Selenium WebDriver and pytest using Page Object Model (POM).
 
 ---
 
@@ -8,10 +8,11 @@ Test automation framework for an e-commerce demo application built with Python, 
 
 - Python 3
 - Selenium WebDriver
-- unittest
-- DDT
+- pytest
+- pytest fixtures
+- pytest parameterization
 - Faker
-- HTMLTestRunner
+- pytest-html
 
 ---
 
@@ -19,12 +20,33 @@ Test automation framework for an e-commerce demo application built with Python, 
 
 ```text
 .
-├── pages/          # Page Object classes
-├── tests/          # Automated test cases
-├── utils/          # Test data generators and helpers
-├── test_data/      # CSV test data
-├── reports/        # HTML test reports
-└── run_tests.py    # Test runner for HTML reports
+├── conftest.py
+├── pages
+│   ├── components
+│   │   ├── filter_component.py
+│   │   └── header_component.py
+│   ├── account_page.py
+│   ├── base_page.py
+│   ├── cart_page.py
+│   ├── checkout_page.py
+│   ├── home_page.py
+│   ├── login_page.py
+│   ├── product_page.py
+│   └── registration_page.py
+├── tests
+│   ├── test_cart.py
+│   ├── test_checkout.py
+│   ├── test_filtering.py
+│   ├── test_login.py
+│   ├── test_registration.py
+│   └── test_sorting.py
+├── test_data
+│   └── users.csv
+├── utils
+│   ├── constants.py
+│   ├── csv_reader.py
+│   └── data_generator.py
+└── reports
 ```
 
 ---
@@ -45,9 +67,12 @@ Implemented automated UI tests for:
 ## Framework Features
 
 - Page Object Model (POM)
+- Page Components pattern (Header and Filter components)
+- pytest fixtures for test setup and dependency injection
 - Dynamic test data generation using Faker
-- Data-driven testing with DDT and CSV
-- HTML test reporting
+- Data-driven testing with pytest parameterization and CSV
+- Shared project constants
+- HTML reporting with pytest-html
 
 ---
 
@@ -73,19 +98,25 @@ pip install -r requirements.txt
 Run all tests:
 
 ```bash
-python -m unittest discover tests -v
+pytest
+```
+
+Run with detailed output:
+
+```bash
+pytest -v
 ```
 
 Generate HTML report:
 
 ```bash
-python run_tests.py
+pytest -v --html=reports/report.html
 ```
 
 Report output:
 
 ```text
-reports/tests_report.html
+reports/report.html
 ```
 
 ---

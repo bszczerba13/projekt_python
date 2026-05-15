@@ -89,6 +89,8 @@ class BasePage:
     def select_random_option(self, locator):
         """
         Select a random option from dropdown.
+        Limited range is used intentionally to avoid
+        loading large dropdown lists (e.g. country list).
         """
         select = Select(self.wait_for_visibility(locator))
         index = random.randint(1, 20)
