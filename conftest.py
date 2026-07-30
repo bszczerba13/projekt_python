@@ -1,3 +1,4 @@
+import allure
 import pytest
 from selenium import webdriver
 from pages.home_page import HomePage
@@ -72,3 +73,21 @@ def invalid_login_data(data_generator):
     Generate invalid login credentials.
     """
     return data_generator.invalid_login_data_generator()
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+
+    if report.when == "call" and report.failed:
+        driver = item.funcargs.get("driver")
+
+        if driver:
+            try:
+                allure.attach(
+                    driver.get_screenshot_as_png(),
+                    name="Screenshot",
+                    attachment_type=allure.attachment_type.PNG,
+                )
+            except Exception as error:
+                print(f"Warning: Unable to attach screenshot: {error}")
