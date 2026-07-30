@@ -5,6 +5,7 @@ from pages.home_page import HomePage
 from utils.data_generator import DataGenerator
 from selenium.webdriver.chrome.options import Options
 from utils.constants import BASE_URL
+from utils.environment import create_environment_file
 
 @pytest.fixture
 def driver():
@@ -14,6 +15,7 @@ def driver():
     options = Options()
     options.add_argument("--start-maximized")
     driver = webdriver.Chrome(options=options)
+    create_environment_file(driver)
     driver.get(BASE_URL)
     yield driver
     driver.quit()
