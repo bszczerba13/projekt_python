@@ -1,3 +1,4 @@
+import allure
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from pages.components.header_component import HeaderComponent
@@ -15,6 +16,7 @@ class ProductPage(BasePage):
         super().__init__(driver)
         self.header = HeaderComponent(driver)
 
+    @allure.step("Add product to cart")
     def add_product_to_cart(self):
         """
         Add product to cart.

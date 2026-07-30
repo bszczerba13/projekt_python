@@ -1,8 +1,15 @@
+import allure
+from allure_commons.types import Severity
+
+@allure.epic("Catalog")
+@allure.feature("Products filtering")
 class TestFiltering:
     """
     Product filtering test cases.
     """
 
+    @allure.severity(Severity.MINOR)
+    @allure.description("Verify products can be filtered by category")
     def test_filter_hammer(self, home_page):
         """
         Verify filtering products by Hammer category.

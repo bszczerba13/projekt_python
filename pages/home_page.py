@@ -1,3 +1,4 @@
+import allure
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from pages.product_page import ProductPage
@@ -33,6 +34,7 @@ class HomePage(BasePage):
             prices.append(float(price_value))
         return prices
 
+    @allure.step("Sort products by: {option}")
     def sort_by(self, option):
         """
         Sort products by selected option.
@@ -62,6 +64,7 @@ class HomePage(BasePage):
             titles.append(element.text.lower())
         return titles
 
+    @allure.step("Open first available product")
     def open_first_available_product(self):
         """
         Open first available product page.

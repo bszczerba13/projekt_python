@@ -1,3 +1,4 @@
+import allure
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from pages.cart_page import CartPage
@@ -12,6 +13,8 @@ class HeaderComponent(BasePage):
     """
     Header component actions.
     """
+
+    @allure.step("Open login page")
     def click_sign_in(self):
         """
         Open Login page.
@@ -25,6 +28,7 @@ class HeaderComponent(BasePage):
         """
         return int(self.get_text(Locators.CART_QUANTITY))
 
+    @allure.step("Open shopping cart")
     def go_to_cart(self):
         """
         Open shopping cart page.

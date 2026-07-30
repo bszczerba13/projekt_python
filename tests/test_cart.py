@@ -1,10 +1,16 @@
 from utils.constants import EMPTY_CART_MESSAGE
+import allure
+from allure_commons.types import Severity
 
+@allure.epic("Shopping cart")
+@allure.feature("Cart management")
 class TestCart:
     """
     Shopping cart test cases.
     """
 
+    @allure.severity(Severity.NORMAL)
+    @allure.description("Verify user can add product to cart")
     def test_add_product_to_cart(self, product_page):
         """
         Verify adding product to cart.
@@ -20,6 +26,8 @@ class TestCart:
         assert product_name == cart_product_name
         assert product_price * quantity == cart_total_price
 
+    @allure.severity(Severity.NORMAL)
+    @allure.description("Verify user can remove product from cart")
     def test_remove_product_from_cart(self, product_page):
         """
         Verify removing product from cart.

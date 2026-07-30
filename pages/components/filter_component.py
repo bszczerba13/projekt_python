@@ -1,3 +1,4 @@
+import allure
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 
@@ -8,6 +9,8 @@ class FilterComponent(BasePage):
     """
     Product filtering component.
     """
+
+    @allure.step("Filter products by: {category}")
     def filter_by_category(self, category):
         """
         Filter products by category.

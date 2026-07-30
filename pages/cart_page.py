@@ -1,3 +1,4 @@
+import allure
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from pages.checkout_page import CheckoutPage
@@ -26,6 +27,7 @@ class CartPage(BasePage):
         """
         return float(self.get_text(Locators.CART_TOTAL_PRICE).replace('$', '').strip())
 
+    @allure.step("Remove product")
     def remove_product(self):
         """
         Remove product from cart.
@@ -38,6 +40,7 @@ class CartPage(BasePage):
         """
         return self.get_text(Locators.EMPTY_CART_INFO)
 
+    @allure.step("Proceed to checkout")
     def go_to_checkout(self):
         """
         Proceed to checkout.

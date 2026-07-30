@@ -1,3 +1,4 @@
+import allure
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
@@ -16,24 +17,29 @@ class LoginPage(BasePage):
     """
     Page object for login page.
     """
+
+    @allure.step("Enter email")
     def enter_email(self, email):
         """
         Enter user email.
         """
         self.enter_text(Locators.LOGIN_EMAIL, email)
 
+    @allure.step("Enter password")
     def enter_password(self, password):
         """
         Enter user password.
         """
         self.enter_text(Locators.LOGIN_PASSWORD, password)
 
+    @allure.step("Click Login")
     def click_login_button(self):
         """
         Submit login form.
         """
         self.click(Locators.LOGIN_BUTTON)
 
+    @allure.step("Open registration page")
     def click_register_link(self):
         """
         Open registration page.

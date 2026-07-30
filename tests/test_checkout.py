@@ -1,10 +1,16 @@
 from utils.constants import CREDIT_CARD, PAYMENT_SUCCESS_MESSAGE, ORDER_CONFIRMATION_MESSAGE
+import allure
+from allure_commons.types import Severity
 
+@allure.epic("Checkout")
+@allure.feature("Guest checkout")
 class TestCheckout:
     """
     Checkout test cases.
     """
 
+    @allure.severity(Severity.BLOCKER)
+    @allure.description("Verify guest user can complete checkout process")
     def test_checkout(self, product_page, order_data):
         """
         Verify guest checkout flow.

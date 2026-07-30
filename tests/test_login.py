@@ -2,13 +2,18 @@ import pytest
 from pages.account_page import AccountPage
 import utils.csv_reader
 from utils.constants import ADMIN_ROLE, USER_ROLE, ADMIN_PAGE_TITLE, USER_PAGE_TITLE, INVALID_LOGIN_MESSAGE
+import allure
+from allure_commons.types import Severity
 
+@allure.epic("Authentication")
+@allure.feature("Login")
 class TestLogin:
     """
     Login test cases.
     """
     @pytest.mark.parametrize("email,password,role", utils.csv_reader.get_csv_data("test_data/users.csv"))
-
+    @allure.severity(Severity.CRITICAL)
+    @allure.description("Verify that users can log in according to their assigned role.")
     def test_login(self, login_page, driver, email, password, role):
         """
         Verify login for different user roles.
@@ -27,6 +32,8 @@ class TestLogin:
         else:
             pytest.fail(f"Unexpected role: {role}")
 
+    @allure.severity(Severity.CRITICAL)
+    @allure.description("Verify that login fails when invalid credentials are provided.")
     def test_invalid_login_data(self, login_page, invalid_login_data):
         """
         Verify login fails with invalid credentials.
