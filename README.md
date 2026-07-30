@@ -1,125 +1,135 @@
-# Selenium UI Automation Framework (Python)
+# Python Selenium Test Automation Framework
 
-Test automation framework for an e-commerce demo application built with Python, Selenium WebDriver and pytest using Page Object Model (POM).
+Test automation framework for an e-commerce demo application built with Python, Selenium WebDriver and pytest following the Page Object Model (POM) design pattern.
 
----
+## Technology Stack
 
-## Tech Stack
-
-- Python 3
+- Python
 - Selenium WebDriver
 - pytest
-- pytest fixtures
-- pytest parameterization
+- Allure Report
 - Faker
-- pytest-html
-
----
 
 ## Project Structure
 
-```text
-.
-├── conftest.py
-├── pages
-│   ├── components
-│   │   ├── filter_component.py
-│   │   └── header_component.py
-│   ├── account_page.py
-│   ├── base_page.py
-│   ├── cart_page.py
-│   ├── checkout_page.py
-│   ├── home_page.py
-│   ├── login_page.py
-│   ├── product_page.py
-│   └── registration_page.py
-├── tests
-│   ├── test_cart.py
-│   ├── test_checkout.py
-│   ├── test_filtering.py
-│   ├── test_login.py
-│   ├── test_registration.py
-│   └── test_sorting.py
-├── test_data
-│   └── users.csv
-├── utils
-│   ├── constants.py
-│   ├── csv_reader.py
-│   └── data_generator.py
-└── reports
 ```
-
----
-
-## Test Coverage
-
-Implemented automated UI tests for:
-
-- Login (positive and negative scenarios)
-- User registration (positive and negative scenarios)
-- Product sorting
-- Product filtering
-- Shopping cart operations
-- Guest checkout flow
-
----
+.
+├── pages/              Page Object Model implementation
+│   └── components/     Reusable page components
+├── test_data/          Test data
+├── tests/              Automated test modules
+├── utils/              Helper modules
+├── config.py           Framework configuration
+├── conftest.py         Pytest fixtures and hooks
+├── pytest.ini          Pytest configuration
+├── requirements.txt    Project dependencies
+└── README.md
+```
 
 ## Framework Features
 
 - Page Object Model (POM)
-- Page Components pattern (Header and Filter components)
-- pytest fixtures for test setup and dependency injection
+- Page Components pattern
+- pytest fixtures
+- Data-driven testing using CSV and pytest parameterization
 - Dynamic test data generation using Faker
-- Data-driven testing with pytest parameterization and CSV
 - Shared project constants
-- HTML reporting with pytest-html
+- Explicit waits
+- Allure reporting
+- Automatic screenshots for failed tests
+- Environment information in Allure reports
 
----
+## Test Coverage
+
+The framework currently automates the following user scenarios:
+
+- User authentication
+- Product browsing
+- Product filtering
+- Product sorting
+- Shopping cart management
+- Checkout process
+
+> This section will be updated as new test scenarios are implemented.
 
 ## Installation
 
-Clone repository:
+Clone the repository
 
 ```bash
 git clone https://github.com/bszczerba13/projekt_python.git
+```
+
+Go to the project directory
+
+```bash
 cd projekt_python
 ```
 
-Install dependencies:
+(Optional) Create and activate a virtual environment
+
+```bash
+python -m venv .venv
+```
+
+Windows
+
+```bash
+.venv\Scripts\activate
+```
+
+Linux / macOS
+
+```bash
+source .venv/bin/activate
+```
+
+Install the required dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
 ## Running Tests
 
-Run all tests:
+Run all tests
 
 ```bash
 pytest
 ```
 
-Run with detailed output:
+Run tests with verbose output
 
 ```bash
 pytest -v
 ```
 
-Generate HTML report:
+Generate Allure report
 
 ```bash
-pytest -v --html=reports/report.html
+allure serve allure-results
 ```
 
-Report output:
+Generate a static Allure report
 
-```text
-reports/report.html
+```bash
+allure generate allure-results -o allure-report
 ```
 
----
+## Reporting
+
+The framework uses **Allure Report** and provides:
+
+- Interactive test reports
+- Automatic screenshots for failed tests
+- Environment information
+- Detailed execution history
+- Test metadata (severity, description, features)
+
+Generated directories:
+
+- `allure-results/` – raw test results
+- `allure-report/` – generated static report
 
 ## Notes
 
