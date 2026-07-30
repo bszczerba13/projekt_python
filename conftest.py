@@ -1,23 +1,32 @@
 import allure
 import pytest
 from selenium import webdriver
+import config
 from pages.home_page import HomePage
 from utils.data_generator import DataGenerator
 from selenium.webdriver.chrome.options import Options
-from utils.constants import BASE_URL
 from utils.environment import create_environment_file
 
 @pytest.fixture
-def driver():
+def driver(request):
     """
     Create browser instance and open application.
     """
     options = Options()
-    options.add_argument("--start-maximized")
+
+    if config.HEADLESS:
+        options.add_argument("--headless=new")
+        options.add_argument("--window-size=1920,1080")
+    else:
+        options.add_argument("--start-maximized")
+
     driver = webdriver.Chrome(options=options)
+    request.node.driver = driver
     create_environment_file(driver)
-    driver.get(BASE_URL)
+    driver.get(config.BASE_URL)
+
     yield driver
+
     driver.quit()
 
 @pytest.fixture
@@ -81,14 +90,14 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     report = outcome.get_result()
 
-    if report.when == "call" and report.failed:
-        driver = item.funcargs.get("driver")
+    if report.failed:
+        driver = getattr(item, "driver", None)
 
         if driver:
             try:
                 allure.attach(
                     driver.get_screenshot_as_png(),
-                    name="Screenshot",
+                    name=f"Screenshot ({report.when})",
                     attachment_type=allure.attachment_type.PNG,
                 )
             except Exception as error:

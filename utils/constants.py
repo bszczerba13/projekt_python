@@ -1,6 +1,3 @@
-# URL
-BASE_URL = "https://practicesoftwaretesting.com/"
-
 # Timeouts
 DEFAULT_TIMEOUT = 10
 QUICK_TIMEOUT = 2
