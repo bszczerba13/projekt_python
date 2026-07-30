@@ -11,6 +11,7 @@ class TestCart:
 
     @allure.severity(Severity.NORMAL)
     @allure.description("Verify user can add product to cart")
+    @allure.title("Product can be added to the shopping cart")
     def test_add_product_to_cart(self, product_page):
         """
         Verify adding product to cart.
@@ -28,6 +29,7 @@ class TestCart:
 
     @allure.severity(Severity.NORMAL)
     @allure.description("Verify user can remove product from cart")
+    @allure.title("Product can be removed from the shopping cart")
     def test_remove_product_from_cart(self, product_page):
         """
         Verify removing product from cart.

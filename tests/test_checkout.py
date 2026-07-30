@@ -11,6 +11,7 @@ class TestCheckout:
 
     @allure.severity(Severity.BLOCKER)
     @allure.description("Verify guest user can complete checkout process")
+    @allure.title("Guest user can place an order")
     def test_checkout(self, product_page, order_data):
         """
         Verify guest checkout flow.

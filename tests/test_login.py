@@ -14,6 +14,7 @@ class TestLogin:
     @pytest.mark.parametrize("email,password,role", utils.csv_reader.get_csv_data("test_data/users.csv"))
     @allure.severity(Severity.CRITICAL)
     @allure.description("Verify that users can log in according to their assigned role.")
+    @allure.title("User can log in with valid credentials")
     def test_login(self, login_page, driver, email, password, role):
         """
         Verify login for different user roles.
@@ -34,6 +35,7 @@ class TestLogin:
 
     @allure.severity(Severity.CRITICAL)
     @allure.description("Verify that login fails when invalid credentials are provided.")
+    @allure.title("Login fails with invalid credentials")
     def test_invalid_login_data(self, login_page, invalid_login_data):
         """
         Verify login fails with invalid credentials.

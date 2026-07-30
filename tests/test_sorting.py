@@ -10,6 +10,7 @@ class TestSorting:
 
     @allure.severity(Severity.MINOR)
     @allure.description("Verify products can be sorted by price ascending")
+    @allure.title("Products can be sorted by price from low to high")
     def test_sort_price_low_to_high(self, home_page):
         """
         Verify sorting by price ascending.
@@ -20,6 +21,7 @@ class TestSorting:
 
     @allure.severity(Severity.MINOR)
     @allure.description("Verify products can be sorted by price descending")
+    @allure.title("Products can be sorted by price from high to low")
     def test_sort_price_high_to_low(self, home_page):
         """
         Verify sorting by price descending.

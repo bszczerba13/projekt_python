@@ -12,6 +12,7 @@ class TestRegistration:
 
     @allure.severity(Severity.CRITICAL)
     @allure.description("Verify user can register new account")
+    @allure.title("User can register a new account")
     def test_registration(self, registration_page, registration_data, driver):
         """
         Verify successful user registration.
@@ -38,6 +39,7 @@ class TestRegistration:
 
     @allure.severity(Severity.CRITICAL)
     @allure.description("Verify validation message when email is missing")
+    @allure.title("Registration fails when email is missing")
     def test_registration_missing_email(self, registration_page, registration_data):
         """
         Verify registration validation when email is missing.

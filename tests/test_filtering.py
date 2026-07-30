@@ -10,6 +10,7 @@ class TestFiltering:
 
     @allure.severity(Severity.MINOR)
     @allure.description("Verify products can be filtered by category")
+    @allure.title("Products can be filtered by category")
     def test_filter_hammer(self, home_page):
         """
         Verify filtering products by Hammer category.
