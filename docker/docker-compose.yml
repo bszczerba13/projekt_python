@@ -1,0 +1,156 @@
+services:
+
+  mariadb:
+    image: mariadb:12.1
+    attach: false
+
+    env_file:
+      - .env
+
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-p${MARIADB_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+    restart: "no"
+
+
+  db-init:
+    image: testsmith/practice-software-testing-sprint5-api:2.3
+    attach: false
+
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+    env_file:
+      - .env
+
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+    command:
+      php artisan migrate:fresh --seed
+
+    restart: "no"
+
+
+  laravel-api:
+    image: testsmith/practice-software-testing-sprint5-api:2.3
+    attach: false
+
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+
+    env_file:
+      - .env
+
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+    volumes:
+      - laravel-app-code:/var/www
+
+    restart: "no"
+
+
+  angular-ui:
+    image: testsmith/practice-software-testing-sprint5-ui:2.3
+    attach: false
+
+    depends_on:
+      laravel-api:
+        condition: service_started
+
+    environment:
+      __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS: angular-ui
+
+    volumes:
+      - ./angular/environment.docker.ts:/app/src/environments/environment.ts:ro
+
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://127.0.0.1:4200" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+    ports:
+      - "4200:4200"
+
+    restart: "no"
+
+
+  web:
+    image: testsmith/practice-software-testing-web
+    attach: false
+
+    depends_on:
+      laravel-api:
+        condition: service_started
+
+    ports:
+      - "8091:80"
+
+    volumes:
+      - laravel-app-code:/var/www
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "test \"$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1)\" = \"404\""
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+    restart: "no"
+
+  framework:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+
+    # Increase shared memory for Chrome.
+    # Docker's default /dev/shm (64 MB) may cause random "tab crashed"
+    # errors during Selenium test execution.
+    shm_size: "2gb"
+
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+
+      web:
+        condition: service_healthy
+
+      angular-ui:
+        condition: service_healthy
+
+    environment:
+      BASE_URL: http://angular-ui:4200
+      TEST_ENVIRONMENT: Docker
+
+    volumes:
+      - ../allure-results:/app/allure-results
+
+volumes:
+  laravel-app-code:

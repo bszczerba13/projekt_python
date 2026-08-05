@@ -101,5 +101,11 @@ def pytest_runtest_makereport(item, call):
                     name=f"Screenshot ({report.when})",
                     attachment_type=allure.attachment_type.PNG,
                 )
+
+                allure.attach(
+                    driver.page_source,
+                    name=f"Page source ({report.when})",
+                    attachment_type=allure.attachment_type.HTML,
+                )
             except Exception as error:
                 print(f"Warning: Unable to attach screenshot: {error}")
