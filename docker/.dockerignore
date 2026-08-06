@@ -1,15 +1,16 @@
-.git
+.git/
 .gitignore
 
-.idea
-.vscode
+.idea/
+.vscode/
 
-.venv
-__pycache__
-.pytest_cache
+.venv/
+__pycache__/
+.pytest_cache/
 
-allure-results
-allure-report
+allure-results/
+allure-report/
+logs/
 
 .env
 
