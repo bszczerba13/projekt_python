@@ -109,6 +109,19 @@ show_allure_message() {
     fi
 }
 
+cleanup() {
+
+    echo "Stopping services..."
+
+    docker compose -f "$COMPOSE_FILE" down \
+        >"$LOGS_DIRECTORY/shutdown.log" 2>&1
+
+    echo "[OK] Done"
+    echo
+}
+
+trap cleanup EXIT
+
 initialize_workspace
 
 show_header
@@ -155,11 +168,6 @@ run_step \
     "docker compose -f $COMPOSE_FILE up framework" \
     || exit $EXIT_FAILURE
 
-run_step \
-    "Stopping services" \
-    "shutdown" \
-    "docker compose -f $COMPOSE_FILE down" \
-    || exit $EXIT_FAILURE
 
 show_test_summary
 
