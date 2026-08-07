@@ -1,2 +1,3 @@
 # Jenkins data
 jenkins_home/
+.env
