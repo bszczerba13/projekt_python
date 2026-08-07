@@ -37,6 +37,7 @@ services:
     volumes:
       - docker_certs:/certs/client
       - jenkins_docker_data:/var/lib/docker
+      - jenkins_home:/var/jenkins_home
 
     networks:
       - jenkins
