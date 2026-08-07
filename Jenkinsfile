@@ -2,27 +2,9 @@ pipeline {
     agent any
 
     stages {
-        stage('Hello Pipeline') {
+        stage('Tests') {
             steps {
-                sh '''
-                    pwd
-
-                    echo
-
-                    ls -la
-                '''
-            }
-        }
-
-        stage('Docker') {
-            steps {
-                sh '''
-                    docker version
-
-                    echo
-
-                    docker compose version
-                '''
+                sh './scripts/run-tests.sh'
             }
         }
     }
