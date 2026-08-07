@@ -13,5 +13,17 @@ pipeline {
                 '''
             }
         }
+
+        stage('Docker') {
+            steps {
+                sh '''
+                    docker version
+
+                    echo
+
+                    docker compose version
+                '''
+            }
+        }
     }
 }
