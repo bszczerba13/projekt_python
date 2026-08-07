@@ -2,6 +2,10 @@
 
 Test automation framework for an e-commerce demo application built with Python, Selenium WebDriver and pytest following the Page Object Model (POM) design pattern.
 
+The project supports both local execution and Docker-based execution. For Docker environments, helper scripts are provided to automate the complete test workflow.
+
+---
+
 ## Technology Stack
 
 - Python
@@ -9,22 +13,10 @@ Test automation framework for an e-commerce demo application built with Python, 
 - pytest
 - Allure Report
 - Faker
+- Docker
+- Docker Compose
 
-## Project Structure
-
-```
-.
-├── pages/              Page Object Model implementation
-│   └── components/     Reusable page components
-├── test_data/          Test data
-├── tests/              Automated test modules
-├── utils/              Helper modules
-├── config.py           Framework configuration
-├── conftest.py         Pytest fixtures and hooks
-├── pytest.ini          Pytest configuration
-├── requirements.txt    Project dependencies
-└── README.md
-```
+---
 
 ## Framework Features
 
@@ -35,9 +27,33 @@ Test automation framework for an e-commerce demo application built with Python, 
 - Dynamic test data generation using Faker
 - Shared project constants
 - Explicit waits
-- Allure reporting
 - Automatic screenshots for failed tests
 - Environment information in Allure reports
+- Docker-based test execution
+- PowerShell and Bash helper scripts
+- Allure reporting
+
+---
+
+## Project Structure
+
+```text
+.
+├── docker/             Docker Compose configuration
+├── pages/              Page Object Model implementation
+│   └── components/     Reusable page components
+├── scripts/            Docker helper scripts
+├── test_data/          Test data
+├── tests/              Automated test modules
+├── utils/              Helper modules
+├── config.py           Framework configuration
+├── conftest.py         Pytest fixtures and hooks
+├── pytest.ini          Pytest configuration
+├── requirements.txt    Project dependencies
+└── README.md
+```
+
+---
 
 ## Test Coverage
 
@@ -50,71 +66,105 @@ The framework currently automates the following user scenarios:
 - Shopping cart management
 - Checkout process
 
-> This section will be updated as new test scenarios are implemented.
+
+---
 
 ## Installation
 
-Clone the repository
+Clone the repository:
 
 ```bash
 git clone https://github.com/bszczerba13/projekt_python.git
 ```
 
-Go to the project directory
+Go to the project directory:
 
 ```bash
 cd projekt_python
 ```
 
-(Optional) Create and activate a virtual environment
+---
 
-```bash
-python -m venv .venv
-```
+## Running Tests
 
-Windows
+The framework supports three execution methods:
 
-```bash
-.venv\Scripts\activate
-```
+### 1. Local execution
 
-Linux / macOS
-
-```bash
-source .venv/bin/activate
-```
-
-Install the required dependencies
+Install the project dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Running Tests
-
-Run all tests
+Run all tests:
 
 ```bash
 pytest
 ```
 
-Run tests with verbose output
+Run tests with verbose output:
 
 ```bash
 pytest -v
 ```
 
-Generate Allure report
+---
+
+### 2. Docker Compose
+
+#### Prerequisites
+
+- Docker Desktop (Windows) or Docker Engine (Linux)
+- Docker Compose
+
+> **Linux (amd64) only**
+>
+> The project uses a third-party ARM64 Docker image for the `web` service.
+> Before running the Docker environment (either manually with Docker Compose or by using the helper script), install QEMU/binfmt support:
+>
+> ```bash
+> docker run --privileged --rm tonistiigi/binfmt --install arm64
+> ```
+
+Build the framework image and run the test suite:
 
 ```bash
-allure serve allure-results
+docker compose -f docker/docker-compose.yml up --build framework
 ```
 
-Generate a static Allure report
+After the execution completes, stop and remove all containers:
 
 ```bash
-allure generate allure-results -o allure-report
+docker compose -f docker/docker-compose.yml down
 ```
+
+---
+
+### 3. Helper scripts (Recommended)
+
+The helper scripts automatically perform the following tasks:
+
+- Build the framework image
+- Start all required Docker services
+- Execute the complete test suite
+- Generate Allure results
+- Stop and remove all containers
+- Save logs for every execution step
+
+#### Windows
+
+```powershell
+.\scripts\run-tests.ps1
+```
+
+#### Linux
+
+```bash
+./scripts/run-tests.sh
+```
+
+---
 
 ## Reporting
 
@@ -126,10 +176,21 @@ The framework uses **Allure Report** and provides:
 - Detailed execution history
 - Test metadata (severity, description, features)
 
-Generated directories:
+View the report:
 
-- `allure-results/` – raw test results
-- `allure-report/` – generated static report
+```bash
+allure serve allure-results
+```
+
+> The helper scripts automatically clean the `allure-results` directory before each execution.
+
+---
+
+## Logs
+
+When a Docker execution step fails, the helper scripts save detailed logs in the `logs` directory and display the location of the relevant log file to simplify troubleshooting.
+
+---
 
 ## Notes
 

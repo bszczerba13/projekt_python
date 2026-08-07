@@ -35,6 +35,15 @@ show_error() {
     echo
 }
 
+show_log_location() {
+
+    local log_name="$1"
+
+    echo "See:"
+    echo "$LOGS_DIRECTORY/$log_name.log"
+    echo
+}
+
 run_step() {
     local name="$1"
     local log_name="$2"
@@ -76,7 +85,9 @@ show_test_summary() {
     local summary
 
     summary=$(grep -E "passed|failed|skipped|error|errors" \
-        "$LOGS_DIRECTORY/framework.log" | tail -n 1)
+    "$LOGS_DIRECTORY/framework.log" |
+    tail -n 1 |
+    sed 's/^.*| //')
 
     if [ -n "$summary" ]; then
         echo "=========================================="
@@ -120,6 +131,32 @@ cleanup() {
     echo
 }
 
+test_service() {
+
+    local service_name="$1"
+    local log_name="$2"
+
+    local container_id
+    container_id=$(docker compose -f "$COMPOSE_FILE" ps -q "$service_name")
+
+    if [[ -z "$container_id" ]]; then
+        show_error "$service_name container was not created."
+        show_log_location "$log_name"
+        exit "$EXIT_FAILURE"
+    fi
+
+    local status
+    status=$(docker inspect -f '{{.State.Status}}' "$container_id")
+
+    if [[ "$status" == "running" ]]; then
+        return
+    fi
+
+    show_error "$service_name failed to start."
+    show_log_location "$log_name"
+    exit "$EXIT_FAILURE"
+}
+
 trap cleanup EXIT
 
 initialize_workspace
@@ -138,6 +175,8 @@ run_step \
     "docker compose -f $COMPOSE_FILE up -d mariadb" \
     || exit $EXIT_FAILURE
 
+test_service "mariadb" "mariadb"
+
 run_step \
     "Initializing database" \
     "db-init" \
@@ -150,17 +189,23 @@ run_step \
     "docker compose -f $COMPOSE_FILE up -d laravel-api" \
     || exit $EXIT_FAILURE
 
+test_service "laravel-api" "api"
+
 run_step \
     "Starting Angular" \
     "angular" \
     "docker compose -f $COMPOSE_FILE up -d angular-ui" \
     || exit $EXIT_FAILURE
 
+test_service "angular-ui" "angular"
+
 run_step \
     "Starting Web" \
     "web" \
     "docker compose -f $COMPOSE_FILE up -d web" \
     || exit $EXIT_FAILURE
+
+test_service "web" "web"
 
 run_step \
     "Running tests" \

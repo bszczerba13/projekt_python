@@ -85,13 +85,14 @@ function Show-TestSummary {
     $Summary = Get-Content (Join-Path $LogsDirectory "framework.log") |
         Select-String "passed|failed|skipped|error|errors" |
         Select-Object -Last 1
+        $Summary = $Summary -replace '^[^|]+\|\s*', ''
 
     if ($Summary) {
         Write-Host "=========================================="
         Write-Host "Test Summary"
         Write-Host "=========================================="
         Write-Host
-        Write-Host $Summary.Line.Trim()
+        Write-Host $Summary
         Write-Host
     }
 }
@@ -102,7 +103,7 @@ function Show-AllureMessage {
 
     if (Get-Command allure -ErrorAction SilentlyContinue) {
 
-        Write-Host "Run:"
+        Write-Host "To view the report, run:"
         Write-Host
         Write-Host "allure serve allure-results"
         Write-Host
@@ -115,83 +116,142 @@ function Show-AllureMessage {
     }
 }
 
+function Test-Service {
+    param(
+        [string]$ServiceName,
+        [string]$LogName
+    )
+
+    $ContainerId = docker compose -f $ComposeFile ps -q $ServiceName
+
+    if (-not $ContainerId) {
+        Show-Error "$ServiceName container was not created."
+        Show-LogLocation $LogName
+        exit $ExitFailure
+    }
+
+    $Status = docker inspect -f "{{.State.Status}}" $ContainerId
+
+    if ($Status -eq "running") {
+        return
+    }
+
+    Show-Error "$ServiceName failed to start."
+    Show-LogLocation $LogName
+    exit $ExitFailure
+}
+
+function Cleanup {
+
+    Run-Step `
+        -Name "Stopping services" `
+        -LogName "shutdown" `
+        -Command {
+            docker compose -f $ComposeFile down
+        } | Out-Null
+}
+
+function Show-LogLocation {
+    param(
+        [string]$LogName
+    )
+
+    Write-Host "See:"
+    Write-Host "$LogsDirectory/$LogName.log"
+    Write-Host
+}
+
 Initialize-Workspace
 
-Show-Header
+try {
 
-if (-not (Run-Step `
-    -Name "Building framework image" `
-    -LogName "build" `
-    -Command {
-        docker compose -f $ComposeFile build framework
+    Show-Header
+
+    if (-not (Run-Step `
+        -Name "Building framework image" `
+        -LogName "build" `
+        -Command {
+            docker compose -f $ComposeFile build framework
+        })) {
+
+        exit $ExitFailure
+    }
+
+    if (-not (Run-Step `
+        -Name "Starting MariaDB" `
+        -LogName "mariadb" `
+        -Command {
+            docker compose -f $ComposeFile up -d mariadb
     })) {
+        exit $ExitFailure
+    }
 
-    exit $ExitFailure
+    Test-Service `
+        -ServiceName "mariadb" `
+        -LogName "mariadb"
+
+    if (-not (Run-Step `
+        -Name "Initializing database" `
+        -LogName "db-init" `
+        -Command {
+            docker compose -f $ComposeFile up db-init
+    })) {
+        exit $ExitFailure
+    }
+
+    if (-not (Run-Step `
+        -Name "Starting API" `
+        -LogName "api" `
+        -Command {
+            docker compose -f $ComposeFile up -d laravel-api
+    })) {
+        exit $ExitFailure
+    }
+
+    Test-Service `
+        -ServiceName "laravel-api" `
+        -LogName "api"
+
+    if (-not (Run-Step `
+        -Name "Starting Angular" `
+        -LogName "angular" `
+        -Command {
+            docker compose -f $ComposeFile up -d angular-ui
+    })) {
+        exit $ExitFailure
+    }
+
+    Test-Service `
+        -ServiceName "angular-ui" `
+        -LogName "angular"
+
+    if (-not (Run-Step `
+        -Name "Starting Web" `
+        -LogName "web" `
+        -Command {
+            docker compose -f $ComposeFile up -d web
+    })) {
+        exit $ExitFailure
+    }
+
+    Test-Service `
+        -ServiceName "web" `
+        -LogName "web"
+
+    if (-not (Run-Step `
+        -Name "Running tests" `
+        -LogName "framework" `
+        -Command {
+            docker compose -f $ComposeFile up framework
+    })) {
+        exit $ExitFailure
+    }
+
+    Show-TestSummary
+
+    Show-AllureMessage
 }
+finally {
 
-if (-not (Run-Step `
-    -Name "Starting MariaDB" `
-    -LogName "mariadb" `
-    -Command {
-        docker compose -f $ComposeFile up -d mariadb
-})) {
-    exit $ExitFailure
+    Cleanup
 }
-
-if (-not (Run-Step `
-    -Name "Initializing database" `
-    -LogName "db-init" `
-    -Command {
-        docker compose -f $ComposeFile up db-init
-})) {
-    exit $ExitFailure
-}
-
-if (-not (Run-Step `
-    -Name "Starting API" `
-    -LogName "api" `
-    -Command {
-        docker compose -f $ComposeFile up -d laravel-api
-})) {
-    exit $ExitFailure
-}
-
-if (-not (Run-Step `
-    -Name "Starting Angular" `
-    -LogName "angular" `
-    -Command {
-        docker compose -f $ComposeFile up -d angular-ui
-})) {
-    exit $ExitFailure
-}
-
-if (-not (Run-Step `
-    -Name "Starting Web" `
-    -LogName "web" `
-    -Command {
-        docker compose -f $ComposeFile up -d web
-})) {
-    exit $ExitFailure
-}
-
-if (-not (Run-Step `
-    -Name "Running tests" `
-    -LogName "framework" `
-    -Command {
-        docker compose -f $ComposeFile up framework
-})) {
-    exit $ExitFailure
-}
-
-if (-not (Run-Step `
-    -Name "Stopping services" `
-    -LogName "shutdown" `
-    -Command {
-        docker compose -f $ComposeFile down
-})) {
-    exit $ExitFailure
-}
-
-Show-TestSummary
-
-Show-AllureMessage
