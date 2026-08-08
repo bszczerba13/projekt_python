@@ -92,6 +92,9 @@ cd projekt_python
 ---
 
 ## Running Tests
+### Parallel test execution
+
+Tests are executed in parallel using 4 workers to reduce execution time.
 
 The framework supports three execution methods:
 
