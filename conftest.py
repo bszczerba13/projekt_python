@@ -4,7 +4,9 @@ from selenium import webdriver
 import config
 from pages.home_page import HomePage
 from utils.data_generator import DataGenerator
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.edge.options import Options as EdgeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from utils.environment import create_environment_file
 
 @pytest.fixture
@@ -12,16 +14,46 @@ def driver(request):
     """
     Create browser instance and open application.
     """
-    options = Options()
+    if config.BROWSER == "chrome":
+        options = ChromeOptions()
 
-    if config.HEADLESS:
-        options.add_argument("--headless=new")
-        options.add_argument("--window-size=1920,1080")
-        options.add_argument("--no-sandbox")
+        if config.HEADLESS:
+            options.add_argument("--headless=new")
+            options.add_argument("--window-size=1920,1080")
+            options.add_argument("--no-sandbox")
+        else:
+            options.add_argument("--start-maximized")
+
+        driver = webdriver.Chrome(options=options)
+
+    elif config.BROWSER == "firefox":
+        options = FirefoxOptions()
+
+        if config.HEADLESS:
+            options.add_argument("--headless")
+            driver = webdriver.Firefox(options=options)
+        else:
+            driver = webdriver.Firefox(options=options)
+            driver.maximize_window()
+
+    elif config.BROWSER == "edge":
+        options = EdgeOptions()
+
+        if config.HEADLESS:
+            options.add_argument("--headless=new")
+            options.add_argument("--window-size=1920,1080")
+            options.add_argument("--no-sandbox")
+        else:
+            options.add_argument("--start-maximized")
+
+        driver = webdriver.Edge(options=options)
+
     else:
-        options.add_argument("--start-maximized")
+        raise ValueError(
+            f"Unsupported browser: {config.BROWSER}. "
+            "Supported browsers: chrome, firefox, edge."
+        )
 
-    driver = webdriver.Chrome(options=options)
     request.node.driver = driver
     create_environment_file(driver)
     driver.get(config.BASE_URL)

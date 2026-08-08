@@ -17,3 +17,5 @@ HEADLESS = os.getenv(
     "HEADLESS",
     "false"
 ).lower() == "true"
+
+BROWSER = os.getenv("BROWSER", "chrome").lower()
