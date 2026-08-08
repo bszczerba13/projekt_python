@@ -15,6 +15,7 @@ The project supports both local execution and Docker-based execution. For Docker
 - Faker
 - Docker
 - Docker Compose
+- Jenkins
 
 ---
 
@@ -32,6 +33,7 @@ The project supports both local execution and Docker-based execution. For Docker
 - Docker-based test execution
 - PowerShell and Bash helper scripts
 - Allure reporting
+- Jenkins CI pipeline with automatic test execution and Allure reporting
 
 ---
 
@@ -40,6 +42,7 @@ The project supports both local execution and Docker-based execution. For Docker
 ```text
 .
 ├── docker/             Docker Compose configuration
+├── jenkins/            Jenkins CI configuration
 ├── pages/              Page Object Model implementation
 │   └── components/     Reusable page components
 ├── scripts/            Docker helper scripts
@@ -50,6 +53,7 @@ The project supports both local execution and Docker-based execution. For Docker
 ├── conftest.py         Pytest fixtures and hooks
 ├── pytest.ini          Pytest configuration
 ├── requirements.txt    Project dependencies
+├── Jenkinsfile         Jenkins pipeline definition
 └── README.md
 ```
 
@@ -183,6 +187,14 @@ allure serve allure-results
 ```
 
 > The helper scripts automatically clean the `allure-results` directory before each execution.
+
+---
+
+## Continuous Integration
+
+The project includes a Jenkins CI pipeline that automatically runs the test suite after changes are pushed to GitHub.
+
+Test results are published as Allure reports in Jenkins.
 
 ---
 
