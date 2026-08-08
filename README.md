@@ -16,6 +16,7 @@ The project supports both local execution and Docker-based execution. For Docker
 - Docker
 - Docker Compose
 - Jenkins
+- pytest-xdist
 
 ---
 
@@ -34,6 +35,7 @@ The project supports both local execution and Docker-based execution. For Docker
 - PowerShell and Bash helper scripts
 - Allure reporting
 - Jenkins CI pipeline with automatic test execution and Allure reporting
+- Parallel test execution with 4 workers using pytest-xdist
 
 ---
 
