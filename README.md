@@ -11,12 +11,12 @@ The project supports both local execution and Docker-based execution. For Docker
 - Python
 - Selenium WebDriver
 - pytest
+- pytest-xdist
 - Allure Report
 - Faker
 - Docker
 - Docker Compose
 - Jenkins
-- pytest-xdist
 
 ---
 
@@ -32,10 +32,11 @@ The project supports both local execution and Docker-based execution. For Docker
 - Automatic screenshots for failed tests
 - Environment information in Allure reports
 - Docker-based test execution
+- Local and Docker cross-browser execution (Chrome, Firefox and Edge)
+- Parallel test execution with 4 workers using pytest-xdist
 - PowerShell and Bash helper scripts
 - Allure reporting
 - Jenkins CI pipeline with automatic test execution and Allure reporting
-- Parallel test execution with 4 workers using pytest-xdist
 
 ---
 
@@ -72,51 +73,66 @@ The framework currently automates the following user scenarios:
 - Shopping cart management
 - Checkout process
 
-
 ---
 
 ## Installation
 
 Clone the repository:
 
-```bash
-git clone https://github.com/bszczerba13/projekt_python.git
-```
+    git clone https://github.com/bszczerba13/projekt_python.git
 
 Go to the project directory:
 
-```bash
-cd projekt_python
-```
+    cd projekt_python
 
 ---
 
 ## Running Tests
+
 ### Parallel test execution
 
-Tests are executed in parallel using 4 workers to reduce execution time.
+Tests are executed in parallel using 4 workers with pytest-xdist to reduce execution time.
 
 The framework supports three execution methods:
 
+1. Local execution
+2. Docker Compose
+3. Helper scripts
+
+Chrome is used as the default browser. Firefox and Edge can be selected when needed.
+
+---
+
 ### 1. Local execution
+
+Create and activate a virtual environment:
+
+#### Windows
+
+    python -m venv .venv
+    
+    .venv\Scripts\Activate.ps1
+
+#### Linux
+
+    python3 -m venv .venv
+    
+    source .venv/bin/activate
+
 
 Install the project dependencies:
 
-```bash
-pip install -r requirements.txt
-```
+    pip install -r requirements.txt
 
-Run all tests:
+#### Browser selection
 
-```bash
-pytest
-```
+Chrome is used by default. To run tests with another browser, set the BROWSER environment variable.
 
-Run tests with verbose output:
-
-```bash
-pytest -v
-```
+| Browser | PowerShell | Bash |
+|---|---|---|
+| Chrome | pytest | pytest |
+| Firefox | $env:BROWSER="firefox"; pytest | BROWSER=firefox pytest |
+| Edge | $env:BROWSER="edge"; pytest | BROWSER=edge pytest |
 
 ---
 
@@ -127,32 +143,34 @@ pytest -v
 - Docker Desktop (Windows) or Docker Engine (Linux)
 - Docker Compose
 
-> **Linux (amd64) only**
+> Linux (amd64) only
 >
-> The project uses a third-party ARM64 Docker image for the `web` service.
+> The project uses a third-party ARM64 Docker image for the web service.
 > Before running the Docker environment (either manually with Docker Compose or by using the helper script), install QEMU/binfmt support:
 >
-> ```bash
-> docker run --privileged --rm tonistiigi/binfmt --install arm64
-> ```
+>     docker run --privileged --rm tonistiigi/binfmt --install arm64
 
-Build the framework image and run the test suite:
+#### Run tests
 
-```bash
-docker compose -f docker/docker-compose.yml up --build framework
-```
+Chrome is used by default. To run tests using another browser, set the BROWSER environment variable before starting the framework.
+
+| Browser | PowerShell | Bash |
+|---|---|---|
+| Chrome | docker compose -f docker/docker-compose.yml up --build framework | docker compose -f docker/docker-compose.yml up --build framework |
+| Firefox | $env:BROWSER="firefox"; docker compose -f docker/docker-compose.yml up --build framework | BROWSER=firefox docker compose -f docker/docker-compose.yml up --build framework |
+| Edge | $env:BROWSER="edge"; docker compose -f docker/docker-compose.yml up --build framework | BROWSER=edge docker compose -f docker/docker-compose.yml up --build framework |
 
 After the execution completes, stop and remove all containers:
 
-```bash
-docker compose -f docker/docker-compose.yml down
-```
+    docker compose -f docker/docker-compose.yml down
 
 ---
 
 ### 3. Helper scripts (Recommended)
 
-The helper scripts automatically perform the following tasks:
+The helper scripts provide the easiest way to run the complete Docker test workflow.
+
+They automatically:
 
 - Build the framework image
 - Start all required Docker services
@@ -161,23 +179,20 @@ The helper scripts automatically perform the following tasks:
 - Stop and remove all containers
 - Save logs for every execution step
 
-#### Windows
 
-```powershell
-.\scripts\run-tests.ps1
-```
+Chrome is used by default. Firefox and Edge can be selected using the commands below.
 
-#### Linux
-
-```bash
-./scripts/run-tests.sh
-```
+| Browser | Windows | Linux |
+|---|---|---|
+| Chrome | .\scripts\run-tests.ps1 | ./scripts/run-tests.sh |
+| Firefox | .\scripts\run-tests.ps1 -Browser firefox | ./scripts/run-tests.sh firefox |
+| Edge | .\scripts\run-tests.ps1 -Browser edge | ./scripts/run-tests.sh edge |
 
 ---
 
 ## Reporting
 
-The framework uses **Allure Report** and provides:
+The framework uses Allure Report and provides:
 
 - Interactive test reports
 - Automatic screenshots for failed tests
@@ -187,11 +202,11 @@ The framework uses **Allure Report** and provides:
 
 View the report:
 
-```bash
-allure serve allure-results
-```
+    allure serve allure-results
 
-> The helper scripts automatically clean the `allure-results` directory before each execution.
+> Allure CLI is optional and is required only to view the generated reports.
+
+> The helper scripts automatically clean the allure-results directory before each execution.
 
 ---
 
@@ -205,7 +220,7 @@ Test results are published as Allure reports in Jenkins.
 
 ## Logs
 
-When a Docker execution step fails, the helper scripts save detailed logs in the `logs` directory and display the location of the relevant log file to simplify troubleshooting.
+When a Docker execution step fails, the helper scripts save detailed logs in the logs directory and display the location of the relevant log file to simplify troubleshooting.
 
 ---
 
