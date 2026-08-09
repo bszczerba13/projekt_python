@@ -13,6 +13,12 @@ ALLURE_RESULTS_DIRECTORY="allure-results"
 EXIT_SUCCESS=0
 EXIT_FAILURE=1
 
+BROWSER="${1:-}"
+
+if [[ -n "$BROWSER" ]]; then
+    export BROWSER
+fi
+
 show_header() {
     echo "=========================================="
     echo "Python Selenium Framework"

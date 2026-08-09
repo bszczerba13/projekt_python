@@ -39,11 +39,23 @@ http://dl.google.com/linux/chrome/deb/ stable main" \
 > /etc/apt/sources.list.d/google-chrome.list
 
 # --------------------------------------------------
-# Google Chrome
+# Microsoft Edge repository
+# --------------------------------------------------
+RUN wget -q -O - https://packages.microsoft.com/keys/microsoft.asc | \
+    gpg --dearmor -o /etc/apt/keyrings/microsoft-edge.gpg
+
+RUN echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft-edge.gpg] \
+https://packages.microsoft.com/repos/edge stable main" \
+> /etc/apt/sources.list.d/microsoft-edge.list
+
+# --------------------------------------------------
+# Browsers
 # --------------------------------------------------
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         google-chrome-stable \
+        firefox-esr \
+        microsoft-edge-stable \
         libnss3 \
         libgbm1 \
         libasound2 \

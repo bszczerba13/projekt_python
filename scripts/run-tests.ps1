@@ -1,3 +1,8 @@
+param(
+    [ValidateSet("chrome", "firefox", "edge")]
+    [string]$Browser
+)
+
 # Go to the project root directory.
 Set-Location (Join-Path $PSScriptRoot "..")
 
@@ -7,6 +12,10 @@ $AllureResultsDirectory = "allure-results"
 
 $ExitSuccess = 0
 $ExitFailure = 1
+
+if ($Browser) {
+    $env:BROWSER = $Browser
+}
 
 function Show-Header {
 Write-Host ==========================================
