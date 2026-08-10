@@ -41,8 +41,11 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
 
+    volumes:
+      - laravel-app-code:/var/www
+
     command:
-      php artisan migrate:fresh --seed
+      sh -c "php artisan migrate:fresh --seed && php artisan cache:clear"
 
 
   laravel-api:
