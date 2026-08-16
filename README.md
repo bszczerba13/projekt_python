@@ -75,6 +75,16 @@ The framework currently automates the following user scenarios:
 
 ---
 
+## Test environment
+
+The application is publicly accessible and shared with other users, so its data
+may be modified independently of the test suite.
+
+For reliable and reproducible test execution, using the provided Docker
+environment is recommended.
+
+---
+
 ## Installation
 
 Clone the repository:
